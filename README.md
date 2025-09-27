@@ -11,7 +11,7 @@ Brief description: A reviewing website where users can get trustworthy advice fr
 
 ### UI Component Props:
 - Button variants: 'primary' | 'secondary' | 'danger'
-- [Add component prop types you'll need]
+- Categories for products (cosmetics, entertainment, etc.)
 
 ## Naming Conventions:
 - Interfaces: PascalCase (UserProfile, ButtonProps)
@@ -35,7 +35,7 @@ Brief description: A reviewing website where users can get trustworthy advice fr
 - Test TypeScript changes locally first
 
 ## This Week's Goals:
-- [ ] Set up shared types file
 - [ ] Define core data models
 - [ ] Establish component prop patterns
-- [ ] Practice today's TypeScript enhancements
+- [ ] Design Logo for the top of page
+- [ ] Key layout for data

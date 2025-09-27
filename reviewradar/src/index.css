@@ -33,6 +33,10 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
+  background: #972CB5;
+  background: linear-gradient(to right, #972CB5 0%, #D99DF5 50%, #AC5CD1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 button {
@@ -60,7 +64,7 @@ button:focus-visible {
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: #55145e;
   }
   button {
     background-color: #f9f9f9;
