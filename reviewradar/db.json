@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "beautylover",
+      "profilePic": "https://dfjx2uxqg3cgi.cloudfront.net/img/photo/205397/205397_ff_2x.jpg?20200326221442?20200326221442"
+    },
+    {
+      "id": 2,
+      "username": "techguy",
+      "profilePic": "https://assets.kogan.com/images/igamingcomp/IGM-7447873126615-42065168564439/7-b4ab3a3001-img_e7862-524687.jpg?auto=webp&bg-color=fff&canvas=1200%2C800&dpr=1&enable=upscale&fit=bounds&height=800&quality=90&width=1200"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "userId": 1,
+      "product": "Lipstick",
+      "category": "Cosmetics",
+      "rating": 5,
+      "review": "Color lasts a while!"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "product": "Wireless Earbuds",
+      "category": "Tech",
+      "rating": 4,
+      "review": "Great sound quality but battery life could be improved."
+    }
+  ]
+}
