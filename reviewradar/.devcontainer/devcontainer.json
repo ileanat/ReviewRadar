@@ -1,0 +1,13 @@
+{
+  "forwardPorts": [5100, 5000],
+  "portsAttributes": {
+    "5100": {
+      "label": "Vite App",
+      "onAutoForward": "openBrowser"
+    },
+    "5000": {
+      "label": "JSON Server",
+      "onAutoForward": "silent"
+    }
+  }
+}
