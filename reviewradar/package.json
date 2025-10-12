@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-  "dev": "concurrently \"npm run vite\" \"npm run api\"",
-  "vite": "vite --port 5100",
-  "api": "json-server --watch db.json --port 5000",
-  "build": "tsc -b && vite build",
-  "lint": "eslint .",
-  "preview": "vite preview"
+    "dev": "concurrently \"npm run vite\" \"npm run api\"",
+    "vite": "vite --port 5100",
+    "api": "json-server --watch db.json --port 5000",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.1",
