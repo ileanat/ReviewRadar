@@ -1,41 +1,69 @@
-# ReviewRadar
-# Team TypeScript Standards
+# React + TypeScript + Vite
 
-## Our Project: ReviewRadar
-Brief description: A reviewing website where users can get trustworthy advice from eachother.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Shared Type Definitions:
-### Core Data Models:
-- User: { id: string, name: string, email: string }
-- [Add your project-specific data types]
+Currently, two official plugins are available:
 
-### UI Component Props:
-- Button variants: 'primary' | 'secondary' | 'danger'
-- Categories for products (cosmetics, entertainment, etc.)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Naming Conventions:
-- Interfaces: PascalCase (UserProfile, ButtonProps)
-- Types: PascalCase (UserRole, Status)
-- Union Types: Descriptive names (UserRole, not just Role)
+## Expanding the ESLint configuration
 
-## File Organization:
-- `/types/index.ts` - Shared types across components
-- Component files include component-specific props
-- Keep related types together
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## Union Types We'll Use:
-(Based on your project features)
-- [List 3-5 union types your project will need]
-- Example: UserRole: 'admin' | 'user' | 'guest'
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-## Team Development Workflow:
-- Create types before components
-- Review TypeScript changes in pull requests
-- No `any` without team discussion
-- Test TypeScript changes locally first
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
 
-## This Week's Goals:
-- [ ] Define core data models
-- [ ] Establish component prop patterns
-- [ ] Design Logo for the top of page
-- [ ] Key layout for data
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
