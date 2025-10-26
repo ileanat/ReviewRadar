@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 const loading = "https://cdn.dribbble.com/users/546766/screenshots/4790425/progress-circle.gif";
 import "./index.css";
 import "./App.css";
@@ -10,6 +11,8 @@ function App() {
   const [reviewText, setReviewText] = useState(""); // new
   const [submittedReview, setSubmittedReview] = useState<string | null>(null); // new
   const [formCategory, setFormCategory] = useState(""); // for the input form only
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetch("/reviews")
@@ -31,13 +34,15 @@ function App() {
 <div className="fixed top-4 right-4 flex space-x-2 z-50">
   <button
     className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
-    onClick={() => alert("Login clicked")}
+    //onClick={() => alert("Login clicked")}
+    onClick={() => navigate("/login")}
   >
     Login
   </button>
   <button
     className="px-4 py-2 border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white"
-    onClick={() => alert("Signup clicked")}
+    //onClick={() => alert("Signup clicked")}
+    onClick={() => navigate("/signup")}
   >
     Signup
   </button>

@@ -4,13 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run vite\" \"npm run api\"",
-    "vite": "vite --port 5100",
-    "api": "json-server --watch db.json --port 5000",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
+  "server": "node server/server.js",                          
+  "mock": "json-server --watch db.json --port 5100 --host 0.0.0.0", 
+  "dev:vite": "vite --port 5101 --host",                      
+  "dev": "concurrently -k \"npm:server\" \"npm:dev:vite\"",   
+  "build": "tsc -b && vite build",
+  "lint": "eslint .",
+  "preview": "vite preview"
+},
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
