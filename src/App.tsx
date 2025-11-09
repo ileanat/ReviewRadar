@@ -7,6 +7,7 @@ import logo from "./assets/logo.png";
 function App() {
   //const [count, setCount] = useState(0);
   const [reviews, setReviews] = useState<any[]>([]);
+  const [product, setProduct] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [reviewText, setReviewText] = useState("");
   const [submittedReview, setSubmittedReview] = useState<string | null>(null);
@@ -17,22 +18,29 @@ function App() {
   useEffect(() => {
     // Connect to backend to fetch reviews- including star ratings
     //{id, product, review, category, rating}
-    fetch("/reviews")
-      .then((res) => res.json())
-      .then((data) => setReviews(data))
-      .catch((err) => console.error("Error fetching reviews:", err));
+
+    //api endpoint: http://localhost:8000/api/reviews
+    
   }, []);
 
   const handleSubmit = () => {
     if (reviewText.trim() === "") return;
 
     // For now, just log review data
-    const reviewData = {
-      product: reviewText,
-      category: formCategory,
-      rating,
+
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
     };
-    console.log("Submitted review:", reviewData);
+    fetch('http://localhost:8000/api/reviews', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        console.log('Success:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
 
     setSubmittedReview(reviewText);
     setReviewText("");
@@ -111,8 +119,8 @@ function App() {
   type="text"
   className="w-4/5 md:w-3/4 lg:w-2/3 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
   placeholder="Product Name"
-  value={reviewText}
-  onChange={(e) => setReviewText(e.target.value)}
+  value={product}
+  onChange={(e) => setProduct(e.target.value)}
 />
 
 {/* Category Dropdown */}

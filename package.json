@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "server": "node server/server.js",
+    "server": "nodemon server/server.js",
     "mock": "json-server --watch db.json --port 5100 --host 0.0.0.0",
-    "dev:vite": "vite --port 5101 --host",
-    "dev": "concurrently -k \"npm:server\" \"npm:dev:vite\"",
+    "dev": "vite --port 5101 --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
