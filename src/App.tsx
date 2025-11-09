@@ -5,7 +5,7 @@ import "./index.css";
 import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0);
+  //const [count, setCount] = useState(0);
   const [reviews, setReviews] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [reviewText, setReviewText] = useState(""); // new
@@ -58,9 +58,9 @@ function App() {
       <h1>ReviewRadar</h1>
 
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
+        </button> */}
         
 
         <div className="text-left ml-0 pl-0">Choose a Category:</div>
