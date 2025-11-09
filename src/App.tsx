@@ -5,7 +5,7 @@ import "./App.css";
 import logo from "./assets/logo.png";
 
 function App() {
-  const [count, setCount] = useState(0);
+  //const [count, setCount] = useState(0);
   const [reviews, setReviews] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [reviewText, setReviewText] = useState("");
@@ -63,15 +63,13 @@ function App() {
         ReviewRadar
       </h1>
 
-      {/* Count button and category title */}
-      <div className="card text-center mt-4">
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
+      <div className="card">
+        {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
-        </button>
-        <div className="text-left ml-0 pl-0 mb-1 mt-2">Choose a Category:</div>
+        </button> */}
+        
+
+        <div className="text-left ml-0 pl-0">Choose a Category:</div>
       </div>
 
       {/* Category Buttons */}
