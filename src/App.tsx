@@ -1,20 +1,22 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-const loading = "https://cdn.dribbble.com/users/546766/screenshots/4790425/progress-circle.gif";
 import "./index.css";
 import "./App.css";
+import logo from "./assets/logo.png";
 
 function App() {
   //const [count, setCount] = useState(0);
   const [reviews, setReviews] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [reviewText, setReviewText] = useState(""); // new
-  const [submittedReview, setSubmittedReview] = useState<string | null>(null); // new
-  const [formCategory, setFormCategory] = useState(""); // for the input form only
+  const [reviewText, setReviewText] = useState("");
+  const [submittedReview, setSubmittedReview] = useState<string | null>(null);
+  const [formCategory, setFormCategory] = useState("");
+  const [rating, setRating] = useState(0); // ⭐ new state for star rating
   const navigate = useNavigate();
 
-
   useEffect(() => {
+    // Connect to backend to fetch reviews- including star ratings
+    //{id, product, review, category, rating}
     fetch("/reviews")
       .then((res) => res.json())
       .then((data) => setReviews(data))
@@ -23,39 +25,43 @@ function App() {
 
   const handleSubmit = () => {
     if (reviewText.trim() === "") return;
+
+    // For now, just log review data
+    const reviewData = {
+      product: reviewText,
+      category: formCategory,
+      rating,
+    };
+    console.log("Submitted review:", reviewData);
+
     setSubmittedReview(reviewText);
     setReviewText("");
+    setRating(0);
   };
 
   return (
     <>
-      <div>
-        {/* Top-right login/signup buttons fixed */}
-<div className="fixed top-4 right-4 flex space-x-2 z-50">
-  <button
-    className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
-    //onClick={() => alert("Login clicked")}
-    onClick={() => navigate("/login")}
-  >
-    Login
-  </button>
-  <button
-    className="px-4 py-2 border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white"
-    //onClick={() => alert("Signup clicked")}
-    onClick={() => navigate("/signup")}
-  >
-    Signup
-  </button>
-</div>
-        <a
-          href="https://cdn.dribbble.com/users/546766/screenshots/4790425/progress-circle.gif"
-          target="_blank"
+      {/* Top-right login/signup buttons fixed */}
+      <div className="fixed top-4 right-4 flex space-x-2 z-50">
+        <button
+          className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
+          onClick={() => navigate("/login")}
         >
-          <img src={loading} alt="Loading..." />
-        </a>
+          Login
+        </button>
+        <button
+          className="px-4 py-2 border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white"
+          onClick={() => navigate("/signup")}
+        >
+          Signup
+        </button>
       </div>
 
-      <h1>ReviewRadar</h1>
+      {/* Logo and title */}
+      <img src={logo} alt="Logo..." className="w-36 h-auto mx-auto mt-4" />
+      <h1 className="text-center text-purple-500 text-2xl font-semibold mt-2">
+        ReviewRadar
+      </h1>
 
       <div className="card">
         {/* <button onClick={() => setCount((count) => count + 1)}>
@@ -67,27 +73,27 @@ function App() {
       </div>
 
       {/* Category Buttons */}
-      <div className="flex justify-between">
+      <div className="flex justify-center mt-3">
         <button
-          className="flex-1 mx-2 px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
+          className="mx-2 px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
           onClick={() => setSelectedCategory("Cosmetics")}
         >
           Cosmetics
         </button>
         <button
-          className="flex-1 mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-purple-600"
+          className="mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-purple-600"
           onClick={() => setSelectedCategory("Skincare")}
         >
           Skincare
         </button>
         <button
-          className="flex-1 mx-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
+          className="mx-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
           onClick={() => setSelectedCategory("Clothes")}
         >
           Clothes
         </button>
         <button
-          className="flex-1 mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-violet-600"
+          className="mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-violet-600"
           onClick={() => setSelectedCategory("Tech")}
         >
           Tech
@@ -95,23 +101,23 @@ function App() {
       </div>
 
       {/* Centered Review Input Box */}
-<div className="flex flex-col items-center justify-center mt-10">
-  <h2 className="text-xl font-semibold mb-4 text-gray-700">
-    Write a Review
-  </h2>
+      <div className="flex flex-col items-center justify-center mt-10 w-full max-w-3xl mx-auto">
+        <h2 className="w-full text-xl font-semibold mb-4 text-gray-700">
+          Write a Review
+        </h2>
 
-  {/* Product Name Input */}
-  <input
-    type="text"
-    className="w-3/4 md:w-1/2 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-    placeholder="Product Name"
-    value={reviewText} // change this to a new state variable for product
-    onChange={(e) => setReviewText(e.target.value)} // update to product state
-  />
+        {/* Product Name Input */}
+<input
+  type="text"
+  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+  placeholder="Product Name"
+  value={reviewText}
+  onChange={(e) => setReviewText(e.target.value)}
+/>
 
-  {/* Category Dropdown */}
-  <select
-  className="w-3/4 md:w-1/2 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+{/* Category Dropdown */}
+<select
+  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
   value={formCategory}
   onChange={(e) => setFormCategory(e.target.value)}
 >
@@ -124,33 +130,56 @@ function App() {
   <option value="Clothes">Clothes</option>
 </select>
 
-
-  {/* Big Review Textarea */}
-  <textarea
-    className="w-3/4 md:w-1/2 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-    rows={4}
-    placeholder="Write your thoughts about any product..."
-    value={reviewText} // keep this for review text
-    onChange={(e) => setReviewText(e.target.value)}
-  ></textarea>
-
-  <button
-    className="mt-4 px-6 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
-    onClick={handleSubmit}
-  >
-    Submit Review
-  </button>
-
-  {submittedReview && (
-    <div className="mt-6 w-3/4 md:w-1/2 p-4 bg-violet-50 border border-violet-200 rounded-lg text-gray-700">
-      <p className="font-medium">Your review:</p>
-      <p>{submittedReview}</p>
-    </div>
-  )}
-</div>
+{/* Review Textarea */}
+<textarea
+  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
+  rows={4}
+  placeholder="Write your thoughts about any product..."
+  value={reviewText}
+  onChange={(e) => setReviewText(e.target.value)}
+></textarea>
 
 
-      <p className="read-the-docs mt-6">Lots on our to-do list! Stay tuned.</p>
+        {/* ⭐ Star Rating (added here, above the submit button) */}
+        <div className="flex items-center space-x-1 mb-4 mt-4">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <button
+              key={star}
+              type="button"
+              onClick={() => setRating(star)}
+              className={`text-3xl focus:outline-none transition-colors ${
+                star <= rating ? "text-yellow-400" : "text-gray-300"
+              }`}
+            >
+              ★
+            </button>
+          ))}
+        </div>
+        <p className="text-gray-600 mb-4">
+          {rating > 0 ? `You rated: ${rating}/5` : "Click to rate"}
+        </p>
+
+        {/* Submit Button */}
+        <button
+          className="mt-2 px-6 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
+          onClick={handleSubmit}
+        >
+          Submit Review
+        </button>
+
+        {/* Display submitted review (for testing) */}
+        {submittedReview && (
+          <div className="mt-6 w-3/4 md:w-1/2 p-4 bg-violet-50 border border-violet-200 rounded-lg text-gray-700">
+            <p className="font-medium">Your review:</p>
+            <p>{submittedReview}</p>
+            <p className="text-sm text-yellow-500 mt-1">⭐ {rating}/5</p>
+          </div>
+        )}
+      </div>
+
+      <p className="read-the-docs mt-6 text-center">
+        Lots on our to-do list! Stay tuned.
+      </p>
 
       {/* Reviews Section */}
       <div className="mt-6 text-left px-6">
@@ -173,11 +202,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-
-
-
-
