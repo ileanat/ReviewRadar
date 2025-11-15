@@ -12,7 +12,6 @@ router.post('/', async (req, res) => {
         
         const newReview = new Review({ product, username, review, rating, category });
         const savedReview = await newReview.save();
-        console.log("Saved Review:", savedReview);
         res.status(201).json(savedReview);
     } catch (error) {
         res.status(500).json({ message: 'Error creating review', error });

@@ -11,6 +11,7 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [reviewText, setReviewText] = useState("");
   const [submittedReview, setSubmittedReview] = useState<string | null>(null);
+  const [submittedRating, setSubmittedRating] = useState<number | null>(null);
   const [formCategory, setFormCategory] = useState("");
   const [rating, setRating] = useState(0); // ⭐ new state for star rating
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ function App() {
       });
 
     setSubmittedReview(reviewText);
+    setSubmittedRating(rating);
     setReviewText("");
     setRating(0);
   };
@@ -180,7 +182,7 @@ function App() {
           <div className="mt-6 w-3/4 md:w-1/2 p-4 bg-violet-50 border border-violet-200 rounded-lg text-gray-700">
             <p className="font-medium">Your review:</p>
             <p>{submittedReview}</p>
-            <p className="text-sm text-yellow-500 mt-1">⭐ {rating}/5</p>
+            <p className="text-sm text-yellow-500 mt-1">⭐ {submittedRating}/5</p>
           </div>
         )}
       </div>
