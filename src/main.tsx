@@ -6,6 +6,8 @@ import App from './App.tsx';
 import LoginPage from './LoginPage.tsx';
 import SignUpPage from './SignUpPage.tsx';
 import ReviewsPage from './pages/ReviewsPage.tsx';
+import WriteReview from "./WriteReview.tsx";
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -15,6 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/browse" element={<ReviewsPage />} />
+        <Route path="/write-review" element={<WriteReview />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import "./App.css";
 import logo from "./assets/logo.png";
+import reviewart from "./assets/reviewart.png";
+
 
 function App() {
   //const [count, setCount] = useState(0);
@@ -53,6 +55,7 @@ function App() {
     <>
       {/* Top-right login/signup buttons fixed */}
       <div className="fixed top-4 right-4 flex space-x-2 z-50">
+        
         <button
           className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
           onClick={() => navigate("/login")}
@@ -73,11 +76,22 @@ function App() {
         ReviewRadar
       </h1>
 
+
       <div className="card">
         {/* <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button> */}
         
+          <button
+  onClick={() => navigate("/write-review")}
+  className="mt-4 bg-transparent border-none p-0 cursor-pointer"
+>
+  <img
+    src={reviewart}
+    alt="Write a Review"
+    className="w-48 h-auto mx-auto hover:scale-105 transition-transform duration-200 rounded-xl"
+  />
+</button>
 
         <div className="text-left ml-0 pl-0">Choose a Category:</div>
       </div>
@@ -108,83 +122,12 @@ function App() {
         >
           Tech
         </button>
-      </div>
-
-      {/* Centered Review Input Box */}
-      <div className="flex flex-col items-center justify-center mt-10 w-full max-w-3xl mx-auto">
-        <h2 className="w-full text-xl font-semibold mb-4 text-gray-700">
-          Write a Review
-        </h2>
-
-        {/* Product Name Input */}
-<input
-  type="text"
-  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-  placeholder="Product Name"
-  value={product}
-  onChange={(e) => setProduct(e.target.value)}
-/>
-
-{/* Category Dropdown */}
-<select
-  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 mb-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-  value={formCategory}
-  onChange={(e) => setFormCategory(e.target.value)}
->
-  <option value="" disabled>
-    Select Category
-  </option>
-  <option value="Skincare">Skincare</option>
-  <option value="Cosmetics">Cosmetics</option>
-  <option value="Tech">Tech</option>
-  <option value="Clothes">Clothes</option>
-</select>
-
-{/* Review Textarea */}
-<textarea
-  className="w-4/5 md:w-3/4 lg:w-2/3 p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-400"
-  rows={4}
-  placeholder="Write your thoughts about any product..."
-  value={reviewText}
-  onChange={(e) => setReviewText(e.target.value)}
-></textarea>
-
-
-        {/* ⭐ Star Rating (added here, above the submit button) */}
-        <div className="flex items-center space-x-1 mb-4 mt-4">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              onClick={() => setRating(star)}
-              className={`text-3xl focus:outline-none transition-colors ${
-                star <= rating ? "text-yellow-400" : "text-gray-300"
-              }`}
-            >
-              ★
-            </button>
-          ))}
-        </div>
-        <p className="text-gray-600 mb-4">
-          {rating > 0 ? `You rated: ${rating}/5` : "Click to rate"}
-        </p>
-
-        {/* Submit Button */}
         <button
-          className="mt-2 px-6 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
-          onClick={handleSubmit}
+          className="mx-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={() => setSelectedCategory("Other")}
         >
-          Submit Review
+          Other
         </button>
-
-        {/* Display submitted review (for testing) */}
-        {submittedReview && (
-          <div className="mt-6 w-3/4 md:w-1/2 p-4 bg-violet-50 border border-violet-200 rounded-lg text-gray-700">
-            <p className="font-medium">Your review:</p>
-            <p>{submittedReview}</p>
-            <p className="text-sm text-yellow-500 mt-1">⭐ {submittedRating}/5</p>
-          </div>
-        )}
       </div>
 
       <p className="read-the-docs mt-6 text-center">
