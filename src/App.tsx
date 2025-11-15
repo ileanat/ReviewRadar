@@ -52,106 +52,140 @@ function App() {
   };
 
   return (
-    <>
-      {/* Top-right login/signup buttons fixed */}
-      <div className="fixed top-4 right-4 flex space-x-2 z-50">
-        
-        <button
-          className="px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </button>
-        <button
-          className="px-4 py-2 border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white"
-          onClick={() => navigate("/signup")}
-        >
-          Signup
-        </button>
-      </div>
+  <>
 
-      {/* Logo and title */}
-      <img src={logo} alt="Logo..." className="w-36 h-auto mx-auto mt-4" />
-      <h1 className="text-center text-purple-500 text-2xl font-semibold mt-2">
-        ReviewRadar
-      </h1>
+    {/* Top-left logo + title */}
+<div className="fixed top-4 left-4 flex items-center space-x-4 z-50">
+  <img src={logo} alt="Logo" className="w-24 h-auto" /> {/* increased from w-16 to w-24 */}
+  <h1 className="text-purple-500 text-4xl font-bold"> {/* increased from text-2xl to text-4xl */}
+    ReviewRadar
+  </h1>
+</div>
+
+    {/* Top-right login/signup + reviewart */}
+<div className="fixed top-4 right-4 flex flex-col items-center space-y-3 z-50">
+
+  {/* Login + Signup buttons */}
+  <div className="flex space-x-3 w-full">
+    <button
+      className="flex-1 px-6 py-4 text-lg bg-sky-500 text-white rounded hover:bg-blue-600 font-bold"
+      onClick={() => navigate("/login")}
+    >
+      Login
+    </button>
+
+    <button
+      className="flex-1 px-6 py-4 text-lg border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white font-bold"
+      onClick={() => navigate("/signup")}
+    >
+      Signup
+    </button>
+  </div>
+
+  {/* ReviewArt below buttons */}
+  <button
+    onClick={() => navigate("/write-review")}
+    className="bg-transparent border-none p-0 cursor-pointer w-full"
+  >
+    <img
+      src={reviewart}
+      alt="Write a Review"
+      className="w-full h-auto hover:scale-105 transition-transform duration-200 rounded-xl"
+    />
+  </button>
+</div>
+
+{/* Category section */}
+<div className="fixed top-32 left-1/2 transform -translate-x-1/2 text-center z-40">
+  <div className="text-2xl font-semibold mb-4">Choose a Category:</div>
+  <div className="flex justify-center mt-6">
+    <button
+      className="mx-3 px-6 py-4 text-lg font-bold bg-sky-500 text-white rounded hover:bg-blue-600"
+      onClick={() => setSelectedCategory("Cosmetics")}
+    >
+      Cosmetics
+    </button>
+    <button
+      className="mx-3 px-6 py-4 text-lg font-bold bg-violet-500 text-white rounded hover:bg-purple-600"
+      onClick={() => setSelectedCategory("Skincare")}
+    >
+      Skincare
+    </button>
+    <button
+      className="mx-3 px-6 py-4 text-lg font-bold bg-purple-500 text-white rounded hover:bg-purple-600"
+      onClick={() => setSelectedCategory("Clothes")}
+    >
+      Clothes
+    </button>
+    <button
+      className="mx-3 px-6 py-4 text-lg font-bold bg-violet-500 text-white rounded hover:bg-violet-600"
+      onClick={() => setSelectedCategory("Tech")}
+    >
+      Tech
+    </button>
+    <button
+      className="mx-3 px-6 py-4 text-lg font-bold bg-blue-500 text-white rounded hover:bg-blue-600"
+      onClick={() => setSelectedCategory("Other")}
+    >
+      Other
+    </button>
+  </div>
+
+{/* Placeholder Reviews Section */}
+<div className="mt-64 px-6"> {/* mt-64 pushes it below the fixed category section */}
+  <h2 className="text-xl font-semibold mb-4">Sample Reviews</h2>
+
+  <div className="flex space-x-4 overflow-x-auto pb-4">
+    {/* Sample review 1 */}
+    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
+      <h3 className="font-semibold text-purple-400">Cosmic Lipstick</h3>
+      <p>“This is a great product! Highly recommend.”</p>
+      <p className="text-sm text-gray-400">⭐ 4/5</p>
+    </div>
+
+    {/* Sample review 2 */}
+    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
+      <h3 className="font-semibold text-purple-400">Hydrating Face Cream</h3>
+      <p>“I wasn’t satisfied, but customer service was helpful.”</p>
+      <p className="text-sm text-gray-400">⭐ 3/5</p>
+    </div>
+
+    {/* Sample review 3 */}
+    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
+      <h3 className="font-semibold text-purple-400">Stylish Hoodie</h3>
+      <p>“Amazing quality and fast shipping!”</p>
+      <p className="text-sm text-gray-400">⭐ 5/5</p>
+    </div>
+
+    {/* Sample review 4 */}
+    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
+      <h3 className="font-semibold text-purple-400">Smartphone Gadget</h3>
+      <p>“Works as expected. Love it!”</p>
+      <p className="text-sm text-gray-400">⭐ 4/5</p>
+    </div>
+  </div>
+</div>
+</div>
+
+    {/* Reviews Section */}
+<div className="mt-6 text-left px-6">
+  {selectedCategory ? (
+    reviews
+      .filter((r) => r.category === selectedCategory)
+      .map((r) => (
+        <div key={r.id} className="p-4 border-b border-gray-300">
+          <h3 className="font-semibold text-purple-400">{r.product}</h3>
+          <p>{r.review}</p>
+          <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
+        </div>
+      ))
+  ) : null}
+</div>
 
 
-      <div className="card">
-        {/* <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button> */}
-        
-          <button
-  onClick={() => navigate("/write-review")}
-  className="mt-4 bg-transparent border-none p-0 cursor-pointer"
->
-  <img
-    src={reviewart}
-    alt="Write a Review"
-    className="w-48 h-auto mx-auto hover:scale-105 transition-transform duration-200 rounded-xl"
-  />
-</button>
+  </>
+);
 
-        <div className="text-left ml-0 pl-0">Choose a Category:</div>
-      </div>
-
-      {/* Category Buttons */}
-      <div className="flex justify-center mt-3">
-        <button
-          className="mx-2 px-4 py-2 bg-sky-500 text-white rounded hover:bg-blue-600"
-          onClick={() => setSelectedCategory("Cosmetics")}
-        >
-          Cosmetics
-        </button>
-        <button
-          className="mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-purple-600"
-          onClick={() => setSelectedCategory("Skincare")}
-        >
-          Skincare
-        </button>
-        <button
-          className="mx-2 px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600"
-          onClick={() => setSelectedCategory("Clothes")}
-        >
-          Clothes
-        </button>
-        <button
-          className="mx-2 px-4 py-2 bg-violet-500 text-white rounded hover:bg-violet-600"
-          onClick={() => setSelectedCategory("Tech")}
-        >
-          Tech
-        </button>
-        <button
-          className="mx-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          onClick={() => setSelectedCategory("Other")}
-        >
-          Other
-        </button>
-      </div>
-
-      <p className="read-the-docs mt-6 text-center">
-        Lots on our to-do list! Stay tuned.
-      </p>
-
-      {/* Reviews Section */}
-      <div className="mt-6 text-left px-6">
-        {selectedCategory ? (
-          reviews
-            .filter((r) => r.category === selectedCategory)
-            .map((r) => (
-              <div key={r.id} className="p-4 border-b border-gray-300">
-                <h3 className="font-semibold text-purple-400">{r.product}</h3>
-                <p>{r.review}</p>
-                <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
-              </div>
-            ))
-        ) : (
-          <p>Select a category to view reviews.</p>
-        )}
-      </div>
-    </>
-  );
 }
 
 export default App;
