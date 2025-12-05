@@ -7,6 +7,20 @@ import LoginPage from './LoginPage.tsx';
 import SignUpPage from './SignUpPage.tsx';
 import ReviewsPage from './pages/ReviewsPage.tsx';
 import WriteReview from "./WriteReview.tsx";
+import logo from './assets/logo.png';
+
+// set favicon dynamically so we can use the bundled asset from src/assets
+function setFavicon(href: string) {
+  let link: HTMLLinkElement | null = document.querySelector("link[rel~='icon']");
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'icon';
+    document.head.appendChild(link);
+  }
+  link.href = href;
+}
+
+setFavicon(logo);
 
 
 createRoot(document.getElementById('root')!).render(

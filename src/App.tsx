@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import "./App.css";
 import logo from "./assets/logo.png";
-import reviewart from "./assets/reviewart.png";
-
+//import reviewart from "./assets/reviewart.png";
+import makereviewart from "./assets/makereview.png";
 
 function App() {
   //const [count, setCount] = useState(0);
@@ -82,47 +82,56 @@ function App() {
     </button>
   </div>
 
-  {/* ReviewArt below buttons */}
+{/* Left-side Make Review Art button */}
+<div className="fixed top-32 left-4 z-50 ml-24"> 
   <button
     onClick={() => navigate("/write-review")}
-    className="bg-transparent border-none p-0 cursor-pointer w-full"
+    className="bg-transparent border-none p-0 cursor-pointer"
   >
     <img
-      src={reviewart}
+      src={makereviewart}
       alt="Write a Review"
-      className="w-full h-auto hover:scale-105 transition-transform duration-200 rounded-xl"
+      className="w-[600px] h-auto hover:scale-105 transition-transform duration-200 rounded-xl"
     />
   </button>
 </div>
 
+</div>
+
 {/* Category section */}
-<div className="fixed top-32 left-1/2 transform -translate-x-1/2 text-center z-40">
+<div className="fixed top-48 left-1/2 transform -translate-x-1/2 text-center z-40">
   <div className="text-2xl font-semibold mb-4">Choose a Category:</div>
-  <div className="flex justify-center mt-6">
+
+  {/* Move buttons lower by increasing mt value */}
+  <div className="flex justify-center mt-10">
     <button
       className="mx-3 px-6 py-4 text-lg font-bold bg-sky-500 text-white rounded hover:bg-blue-600"
       onClick={() => setSelectedCategory("Cosmetics")}
     >
       Cosmetics
     </button>
+
     <button
       className="mx-3 px-6 py-4 text-lg font-bold bg-violet-500 text-white rounded hover:bg-purple-600"
       onClick={() => setSelectedCategory("Skincare")}
     >
       Skincare
     </button>
+
     <button
       className="mx-3 px-6 py-4 text-lg font-bold bg-purple-500 text-white rounded hover:bg-purple-600"
       onClick={() => setSelectedCategory("Clothes")}
     >
       Clothes
     </button>
+
     <button
       className="mx-3 px-6 py-4 text-lg font-bold bg-violet-500 text-white rounded hover:bg-violet-600"
       onClick={() => setSelectedCategory("Tech")}
     >
       Tech
     </button>
+
     <button
       className="mx-3 px-6 py-4 text-lg font-bold bg-blue-500 text-white rounded hover:bg-blue-600"
       onClick={() => setSelectedCategory("Other")}
@@ -130,6 +139,7 @@ function App() {
       Other
     </button>
   </div>
+
 
 {/* Placeholder Reviews Section */}
 <div className="mt-64 px-6"> {/* mt-64 pushes it below the fixed category section */}
