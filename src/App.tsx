@@ -162,7 +162,8 @@ function App() {
     placeholder="Search reviews..."
     value={searchTerm}
     onChange={(e) => setSearchTerm(e.target.value)}
-    className="w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+    //Search bar needs to be bigger
+    className="w-[700px] px-4 py-4 text-xl border border-gray-300 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-purple-500"
   />
 </div>
 
