@@ -16,6 +16,7 @@ function App() {
   const [submittedRating, setSubmittedRating] = useState<number | null>(null);
   const [formCategory, setFormCategory] = useState("");
   const [rating, setRating] = useState(0); // ⭐ new state for star rating
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,6 +52,60 @@ function App() {
     setRating(0);
   };
 
+    // sample reviews data
+    const sampleReviews = [
+      {
+        id: 1,
+        product: "Cosmic Lipstick",
+        text: "This is a great product! Highly recommend.",
+        rating: 4,
+        category: "Cosmetics",
+      },
+      {
+        id: 2,
+        product: "Hydrating Face Cream",
+        text: "I wasn’t satisfied, but customer service was helpful.",
+        rating: 3,
+        category: "Skincare",
+      },
+      {
+        id: 3,
+        product: "Stylish Hoodie",
+        text: "Amazing quality and fast shipping!",
+        rating: 5,
+        category: "Clothes",
+      },
+      {
+        id: 4,
+        product: "Smartphone Gadget",
+        text: "Works as expected. Love it!",
+        rating: 4,
+        category: "Tech",
+      },
+    ];
+  
+    const term = searchTerm.toLowerCase();
+  
+    // filter sample reviews based on search
+    const filteredSampleReviews = sampleReviews.filter((r) => {
+      if (!term) return true;
+      return (
+        r.product.toLowerCase().includes(term) ||
+        r.text.toLowerCase().includes(term)
+      );
+    });
+  
+    //filter real reviews too
+    const filteredReviews = reviews
+    .filter((r) => !selectedCategory || r.category === selectedCategory)
+    .filter((r) => {
+      if (!term) return true;
+      return (
+        r.product.toLowerCase().includes(term) ||
+        r.review.toLowerCase().includes(term)
+      );
+    });
+
   return (
   <>
 
@@ -82,6 +137,7 @@ function App() {
     </button>
   </div>
 
+
 {/* Left-side Make Review Art button */}
 <div className="fixed top-32 left-4 z-50 ml-24"> 
   <button
@@ -96,6 +152,17 @@ function App() {
   </button>
 </div>
 
+</div>
+
+{/* Search Bar */}
+<div className="fixed top-28 left-1/2 transform -translate-x-1/2 z-50">
+  <input
+    type="text"
+    placeholder="Search reviews..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="w-96 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+  />
 </div>
 
 {/* Category section */}
@@ -140,54 +207,41 @@ function App() {
     </button>
   </div>
 
-
-{/* Placeholder Reviews Section */}
+  {/* Sample Reviews Section */}
 <div className="mt-64 px-6"> {/* mt-64 pushes it below the fixed category section */}
   <h2 className="text-xl font-semibold mb-4">Sample Reviews</h2>
 
   <div className="flex space-x-4 overflow-x-auto pb-4">
-    {/* Sample review 1 */}
-    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
-      <h3 className="font-semibold text-purple-400">Cosmic Lipstick</h3>
-      <p>“This is a great product! Highly recommend.”</p>
-      <p className="text-sm text-gray-400">⭐ 4/5</p>
+  {filteredSampleReviews.map((r) => (
+    <div
+      key={r.id}
+      className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm"
+    >
+      <h3 className="font-semibold text-purple-400">{r.product}</h3>
+      <p>{r.text}</p>
+      <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
     </div>
+  ))}
+  
+  {filteredSampleReviews.length === 0 && (
+    <p className="text-sm text-gray-400">
+      No sample reviews match your search.
+    </p>
+  )}
 
-    {/* Sample review 2 */}
-    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
-      <h3 className="font-semibold text-purple-400">Hydrating Face Cream</h3>
-      <p>“I wasn’t satisfied, but customer service was helpful.”</p>
-      <p className="text-sm text-gray-400">⭐ 3/5</p>
-    </div>
-
-    {/* Sample review 3 */}
-    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
-      <h3 className="font-semibold text-purple-400">Stylish Hoodie</h3>
-      <p>“Amazing quality and fast shipping!”</p>
-      <p className="text-sm text-gray-400">⭐ 5/5</p>
-    </div>
-
-    {/* Sample review 4 */}
-    <div className="min-w-[250px] p-4 border border-gray-300 rounded-md bg-white shadow-sm">
-      <h3 className="font-semibold text-purple-400">Smartphone Gadget</h3>
-      <p>“Works as expected. Love it!”</p>
-      <p className="text-sm text-gray-400">⭐ 4/5</p>
-    </div>
-  </div>
+</div>
 </div>
 </div>
 
     {/* Reviews Section */}
 <div className="mt-6 text-left px-6">
   {selectedCategory ? (
-    reviews
-      .filter((r) => r.category === selectedCategory)
-      .map((r) => (
-        <div key={r.id} className="p-4 border-b border-gray-300">
-          <h3 className="font-semibold text-purple-400">{r.product}</h3>
-          <p>{r.review}</p>
-          <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
-        </div>
+    filteredReviews.map((r) => (
+      <div key={r.id} className="p-4 border-b border-gray-300">
+        <h3 className="font-semibold text-purple-400">{r.product}</h3>
+        <p>{r.review}</p>
+        <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
+      </div>
       ))
   ) : null}
 </div>
