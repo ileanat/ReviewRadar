@@ -5,6 +5,7 @@ import "./App.css";
 import logo from "./assets/logo.png";
 //import reviewart from "./assets/reviewart.png";
 import makereviewart from "./assets/makereview.png";
+import makereview1 from "./assets/makereview1.png";
 
 function App() {
   //const [count, setCount] = useState(0);
@@ -145,9 +146,9 @@ function App() {
     className="bg-transparent border-none p-0 cursor-pointer"
   >
     <img
-      src={makereviewart}
+      src={makereview1}
       alt="Write a Review"
-      className="w-[600px] h-auto hover:scale-105 transition-transform duration-200 rounded-xl"
+      className="w-96 h-auto hover:scale-105 transition-transform duration-200 rounded-xl"
     />
   </button>
 </div>
