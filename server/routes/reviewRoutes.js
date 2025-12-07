@@ -1,10 +1,11 @@
 import express from 'express';
 import Review from '../models/Review.js';
+import requireAuth from '../middleware/requireAuth.js';
 
 const router = express.Router();
 
 // POST /api/reviews
-router.post('/', async (req, res) => {
+router.post('/',requireAuth ,async (req, res) => {
     console.log("Received review data:", req.body);
     try {
         const username = req.body.username || 'Anon';

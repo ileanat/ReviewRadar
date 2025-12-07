@@ -1,10 +1,11 @@
+//@ts-nocheck
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./index.css";
 import "./App.css";
 import logo from "./assets/logo.png";
-//import reviewart from "./assets/reviewart.png";
-import makereviewart from "./assets/makereview.png";
+import { useAuth } from "./context/AuthContext";
 import makereview1 from "./assets/makereview1.png";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const [formCategory, setFormCategory] = useState("");
   const [rating, setRating] = useState(0); // ⭐ new state for star rating
   const [searchTerm, setSearchTerm] = useState("");
+  const {user, logout} = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,21 +124,47 @@ function App() {
 <div className="fixed top-4 right-4 flex flex-col items-center space-y-3 z-50">
 
   {/* Login + Signup buttons */}
-  <div className="flex space-x-3 w-full">
-    <button
-      className="flex-1 px-6 py-4 text-lg bg-sky-500 text-white rounded hover:bg-blue-600 font-bold"
-      onClick={() => navigate("/login")}
-    >
-      Login
-    </button>
+{/* Top-right login/signup OR greeting */}
+<div className="flex space-x-3 w-full text-right">
 
-    <button
-      className="flex-1 px-6 py-4 text-lg border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white font-bold"
-      onClick={() => navigate("/signup")}
-    >
-      Signup
-    </button>
-  </div>
+  {!user ? (
+    <>
+      {/* LOGIN BUTTON */}
+      <button
+        className="px-6 py-4 text-lg bg-sky-500 text-white rounded hover:bg-blue-600 font-bold"
+        onClick={() => navigate("/login")}
+      >
+        Login
+      </button>
+
+      {/* SIGNUP BUTTON */}
+      <button
+        className="px-6 py-4 text-lg border-2 border-purple-500 bg-white text-purple-500 rounded hover:bg-purple-500 hover:text-white font-bold"
+        onClick={() => navigate("/signup")}
+      >
+        Signup
+      </button>
+    </>
+  ) : (
+    <>
+      {/* GREETING */}
+      <div className="text-purple-600 text-xl font-bold">
+        Hello, {user.username} 👋
+      </div>
+
+      {/* LOGOUT BUTTON */}
+      <button
+        className="px-6 py-3 ml-4 bg-red-500 text-white rounded hover:bg-red-600 font-bold"
+        onClick={logout}
+      >
+        Logout
+      </button>
+    </>
+  )}
+
+</div>
+
+
 
 
 {/* Left-side Make Review Art button */}
