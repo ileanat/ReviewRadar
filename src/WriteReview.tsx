@@ -47,8 +47,15 @@ export default function WriteReview() {
       <header className="w-full border-b bg-white/70 backdrop-blur">
         <div className="mx-auto max-w-5xl flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="ReviewRadar logo" className="h-10 w-10" />
-            <span className="text-xl font-bold text-purple-600">
+            <img
+              src={logo}
+              alt="ReviewRadar logo"
+              className="h-10 w-10 cursor-pointer"
+              onClick={() => navigate("/")}
+            />
+            <span className="text-xl font-bold text-purple-600"
+              onClick={() => navigate("/")}
+            >
               ReviewRadar
             </span>
           </div>

@@ -31,29 +31,30 @@ function App() {
   }, []);
 
   const handleSubmit = () => {
-    if (reviewText.trim() === "") return;
+  if (reviewText.trim() === "") return;
 
-    // For now, just log review data
-
-    const requestOptions = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
-    };
-    fetch('http://localhost:8000/api/reviews', requestOptions)
-      .then(response => response.json())
-      .then(data => {
-        console.log('Success:', data);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-
-    setSubmittedReview(reviewText);
-    setSubmittedRating(rating);
-    setReviewText("");
-    setRating(0);
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
   };
+
+  fetch('http://localhost:8000/api/reviews', requestOptions)
+    .then(response => response.json())
+    .then(data => {
+      console.log('Success:', data);
+
+      setReviews(prev => [...prev, data]); // add new review to state
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+
+  setSubmittedReview(reviewText);
+  setSubmittedRating(rating);
+  setReviewText("");
+  setRating(0);
+};
 
     // sample reviews data
     const sampleReviews = [
@@ -264,15 +265,15 @@ function App() {
 
     {/* Reviews Section */}
 <div className="mt-6 text-left px-6">
-  {selectedCategory ? (
-    filteredReviews.map((r) => (
-      <div key={r.id} className="p-4 border-b border-gray-300">
-        <h3 className="font-semibold text-purple-400">{r.product}</h3>
-        <p>{r.review}</p>
-        <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
-      </div>
-      ))
-  ) : null}
+ {selectedCategory ? (
+  [...filteredReviews].reverse().map((r) => (
+    <div key={r.id} className="p-4 border-b border-gray-300">
+      <h3 className="font-semibold text-purple-400">{r.product}</h3>
+      <p>{r.review}</p>
+      <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
+    </div>
+  ))
+) : null}
 </div>
 
 
