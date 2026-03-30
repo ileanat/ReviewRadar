@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "./assets/logo.png";
 
@@ -8,8 +8,40 @@ export default function WriteReview() {
   const [formCategory, setFormCategory] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
+  const [categorySuggestion, setCategorySuggestion] = useState(null);
+  const [loadingSuggestion, setLoadingSuggestion] = useState(false);
 
   const navigate = useNavigate();
+
+  // Fetch category suggestion as user types
+  useEffect(() => {
+    if (!formCategory.trim()) {
+      setCategorySuggestion(null);
+      return;
+    }
+
+    const fetchSuggestion = async () => {
+      setLoadingSuggestion(true);
+      try {
+        const res = await fetch(
+          `http://localhost:8000/api/reviews/category-suggestion?input=${encodeURIComponent(formCategory)}`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          setCategorySuggestion(data);
+        }
+      } catch (err) {
+        console.error("Error fetching category suggestion:", err);
+        setCategorySuggestion(null);
+      } finally {
+        setLoadingSuggestion(false);
+      }
+    };
+
+    // Debounce to avoid too many requests
+    const timer = setTimeout(fetchSuggestion, 300);
+    return () => clearTimeout(timer);
+  }, [formCategory]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,12 +131,28 @@ export default function WriteReview() {
           </label>
           <input
             type="text"
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm 
+            className="w-full p-3 mb-2 border border-gray-300 rounded-lg shadow-sm 
                        bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-400"
             placeholder="e.g., Cosmetics, Tech, Skincare…"
             value={formCategory}
             onChange={(e) => setFormCategory(e.target.value)}
           />
+          
+          {/* Category suggestion hint */}
+          {categorySuggestion && categorySuggestion.changed && (
+            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-between">
+              <div className="text-sm text-purple-700">
+                <span className="font-semibold">Did you mean:</span> <span className="italic">{categorySuggestion.suggestion}</span>?
+              </div>
+              <button
+                type="button"
+                className="ml-2 px-3 py-1 bg-purple-500 text-white text-xs font-semibold rounded hover:bg-purple-600 transition"
+                onClick={() => setFormCategory(categorySuggestion.suggestion)}
+              >
+                Use
+              </button>
+            </div>
+          )}
 
           {/* Review Text */}
           <label className="block text-sm font-medium text-gray-700 mb-1">
