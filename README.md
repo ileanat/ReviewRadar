@@ -1,68 +1,61 @@
-# React + TypeScript + Vite
+# ⭐ ReviewRadar  
+A community‑driven tool helping consumers cut through the noise and find **genuine, trustworthy product reviews**.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ReviewRadar aims to make online shopping more transparent by aggregating, analyzing, and surfacing **authentic reviews** from real people- not bots, not paid placements, not manipulated ratings. In a world where fake reviews are everywhere, ReviewRadar gives users a clearer signal.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## Expanding the ESLint configuration
+- **Real Review Aggregation**  
+  Collects reviews from multiple sources to give users a broader, more reliable picture.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Authenticity Scoring (WIP)**  
+  Uses heuristics and machine‑learning‑ready structures to help identify suspicious or low‑quality reviews.
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- **Clean, User‑Friendly Interface**  
+  Designed to help consumers quickly understand whether a product is genuinely worth buying.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Open Source & Community‑Focused**  
+  Built with transparency in mind. Contributions are welcome.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🧠 Why ReviewRadar?
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Online reviews are broken.  
+Consumers often struggle to tell which reviews are real, which are incentivized, and which are outright fabricated. ReviewRadar exists to:
+
+- empower shoppers with honest information  
+- reduce the influence of fake or misleading reviews  
+- highlight patterns that matter (ex, recurring complaints)  
+- promote transparency in online marketplaces  
+
+If you’ve ever bought something with “4.8 stars” only to be disappointed, this project is for you.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend:** React + Vite + TypeScript + Tailwind  
+- **Backend:** Node.js + Express  
+- **Database:** MongoDB  
+
+---
+
+## 📦 Getting Started
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- npm or yarn
+- MongoDB instance (local or cloud)
+
+### Installation
+
+```bash
+git clone https://github.com/ileanat/ReviewRadar.git
+cd ReviewRadar
+npm install
+
+Running the app
+npm run dev
