@@ -18,13 +18,13 @@ type Review = {
 const ReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState<string>("");  // 🔍 search term
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  
 
   useEffect(() => {
     const fetchReviews = async () => {
@@ -50,6 +50,28 @@ const ReviewsPage: React.FC = () => {
     fetchReviews();
   }, []);
 
+  useEffect(() => {
+    setCurrentPage(1);
+        }, [searchTerm, selectedCategory]);
+
+
+  // functions for pagination, couldn't find where frontend functions are kept so I added them here.
+  function goToPage(page: number) {
+    setCurrentPage(page);
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  }
+
+  function previousPage() {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  }
+
   const categories = [
     "All",
     ...Array.from(new Set(reviews.map((r) => r.category))),
@@ -73,6 +95,13 @@ const ReviewsPage: React.FC = () => {
         review.category.toLowerCase().includes(term)
       );
     });
+
+  // pagination 
+  const RESULTS_PER_PAGE = 5 // change this to whatever value. leaving at 5 for now
+  const totalPages = Math.ceil(filteredReviews.length / RESULTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
+  const paginatedResults = filteredReviews.slice(startIndex, startIndex + RESULTS_PER_PAGE);
+  // reused logic from prev project, most changes are under return
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
@@ -219,21 +248,60 @@ const ReviewsPage: React.FC = () => {
                     No reviews match your current search and filters.
                   </p>
                 ) : (
-                  <div className="grid gap-4 md:grid-cols-2">
-                    {filteredReviews.map((review, index) => (
-                      <ReviewCard
+                  <> {/* <-- using this to wrap review and pagination elements, if more things are added in the future add them under this */}
+                <div className="grid gap-4 md:grid-cols-2">
+                    {paginatedResults.map((review, index) => (
+                    <ReviewCard
                         key={review.id ?? review._id ?? index}
                         product={review.product}
                         category={review.category}
                         rating={review.rating}
                         review={review.review}
-                      />
+                    />
                     ))}
-                  </div>
+                </div>
+
+                {/* Pagination */}
+                {/* Tried to keep the styling the same as the categories buttons can change if needed */}
+                {totalPages > 1 && (
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-gray-100 pt-6">
+                    <button
+                        onClick={previousPage}
+                        disabled={currentPage === 1}
+                        className="rounded-full px-4 py-2 text-xs font-medium tansition     bg-white text-gray-700 border border-gray-200 hover:border-purple-400 hover:text-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                        Previous
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                            key={page}
+                            onClick={() => goToPage(page)}
+                            className={`rounded-full px-3 py-1 text-xs sm:text-sm font-medium transition
+                             ${
+                            currentPage === page
+                                ? "bg-purple-500 text-white shadow"
+                                : "bg-white text-gray-700 border border-gray-200 hover:border-purple-400 hover:text-purple-600"
+                            }`}
+                        >
+                            {page}
+                        </button>
+                        ))}
+                    </div>
+
+                    <button
+                        onClick={nextPage}
+                        disabled={currentPage === totalPages}
+                        className="rounded-full px-4 py-2 text-xs font-medium tansition bg-white text-gray-700 border border-gray-200 hover:border-purple-400 hover:text-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                        Next
+                    </button>
+                    </div>
                 )}
-              </>
+                </>
             )}
-          </section>
+            </>
+        )}
+        </section>
         </div>
       </main>
     </div>
