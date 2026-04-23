@@ -32,7 +32,7 @@ const ReviewsPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("http://localhost:8000/api/reviews");
+        const res = await fetch("api/reviews");
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
         }

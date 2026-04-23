@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Changes 
+
+1. Always confirm before making any changes to the existing code and files. 
+2. Wait for instructions if none are provided.
+3. Do not write any code without confirmation.
+
+---
+
 ## Commands
 
 All scripts run from the repo root unless noted.
