@@ -153,7 +153,7 @@ export default function WriteReview() {
                     <li key={word}>
                       <button
                         type="button"
-                        className="w-full text-left px-4 py-2.5 text-sm text-gray-800 hover:bg-purple-50 hover:text-purple-700 transition-colors"
+                        className="w-full text-left px-4 py-2.5 text-sm !bg-white text-gray-800 hover:!bg-gray-50 transition-colors"
                         onClick={() => selectCategory(word)}
                       >
                         {word}
