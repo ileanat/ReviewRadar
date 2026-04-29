@@ -31,7 +31,7 @@ router.post('/',requireAuth ,async (req, res) => {
 // GET /api/reviews
 router.get('/', async (req, res) => {
     try {
-        const reviews = await Review.find();
+        const reviews = await Review.find().sort({ _id: -1 });
         res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching reviews', error });
