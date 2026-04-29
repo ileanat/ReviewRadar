@@ -31,8 +31,11 @@ const ReviewsPage: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
+        // For local testing: 
+        // const res = await fetch("http://localhost:8000/api/reviews"); // Uncomment this when testing locally 
 
-        const res = await fetch("http://localhost:8000/api/reviews");
+        // for depolyment:
+        const res = await fetch("https://reviewradar-ab0d.onrender.com/api/reviews");
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
         }

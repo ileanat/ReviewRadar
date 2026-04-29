@@ -12,7 +12,8 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5101", // React app
+    // origin: "http://localhost:5101", // React app
+     origin: "https://reviewradar-1.onrender.com/",
     credentials: true,
   })
 );
