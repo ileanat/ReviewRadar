@@ -5,6 +5,7 @@ import Fuse from "fuse.js";
 import logo from "./assets/logo.png";
 import dictionary from "./assets/shopping_dictionary.json";
 
+const environment = import.meta.env.VITE_CLIENT_ENV;
 const fuse = new Fuse(dictionary, {
   threshold: 0.35,
   minMatchCharLength: 2,
@@ -39,8 +40,7 @@ export default function WriteReview() {
 
     if (!reviewText.trim() || !formCategory) return;
 
-    // const res = await fetch("http://localhost:8000/api/reviews", {
-    const res = await fetch("https://reviewradar-ab0d.onrender.com/api/reviews", {
+    const res = await fetch(`${environment}/api/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

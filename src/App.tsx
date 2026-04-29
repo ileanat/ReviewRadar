@@ -8,6 +8,8 @@ import logo from "./assets/logo.png";
 import { useAuth } from "./context/AuthContext";
 import makereview1 from "./assets/makereview1.png";
 
+const environment = import.meta.env.VITE_CLIENT_ENV;
+
 function App() {
   //const [count, setCount] = useState(0);
   const [reviews, setReviews] = useState<any[]>([]);
@@ -38,8 +40,7 @@ function App() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
   };
-  fetch('https://reviewradar-ab0d.onrender.com/api/reviews', requestOptions)
-  // fetch('http://localhost:8000/api/reviews', requestOptions)
+  fetch(`${environment}/api/reviews`, requestOptions)
     .then(response => response.json())
     .then(data => {
       console.log('Success:', data);
