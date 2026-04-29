@@ -38,8 +38,8 @@ function App() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
   };
-
-  fetch('http://localhost:8000/api/reviews', requestOptions)
+  fetch('https://reviewradar-ab0d.onrender.com/api/reviews', requestOptions)
+  // fetch('http://localhost:8000/api/reviews', requestOptions)
     .then(response => response.json())
     .then(data => {
       console.log('Success:', data);

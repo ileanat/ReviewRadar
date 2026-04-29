@@ -39,7 +39,8 @@ export default function WriteReview() {
 
     if (!reviewText.trim() || !formCategory) return;
 
-    const res = await fetch("http://localhost:8000/api/reviews", {
+    // const res = await fetch("http://localhost:8000/api/reviews", {
+    const res = await fetch("https://reviewradar-ab0d.onrender.com/api/reviews", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

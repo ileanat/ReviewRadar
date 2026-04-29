@@ -12,7 +12,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     async function fetchMe() {
       try {
-        const res = await fetch("http://localhost:8000/api/auth/me", {
+        //const res = await fetch("http://localhost:8000/api/auth/me", {
+        const res = await fetch("https://reviewradar-ab0d.onrender.com/api/auth/me", {
           credentials: "include",
         });
         const data = await res.json();
@@ -28,7 +29,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (emailOrUsername, password) => {
-    const res = await fetch("http://localhost:8000/api/auth/login", {
+    //const res = await fetch("http://localhost:8000/api/auth/login", {
+    const res = await fetch("https://reviewradar-ab0d.onrender.com/api/auth/login", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -42,7 +44,8 @@ export function AuthProvider({ children }) {
   };
 
   const register = async (username, email, password) => {
-    const res = await fetch("http://localhost:8000/api/auth/register", {
+    //const res = await fetch("http://localhost:8000/api/auth/register", {
+    const res = await fetch("https://reviewradar-ab0d.onrender.com/api/auth/register", {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -56,7 +59,8 @@ export function AuthProvider({ children }) {
   };
   
   const logout = async () => {
-    await fetch("http://localhost:8000/api/auth/logout", {
+    //await fetch("http://localhost:8000/api/auth/logout", {
+    await fetch("https://reviewradar-ab0d.onrender.com/api/auth/logout", {
       method: "POST",
       credentials: "include",
     });
