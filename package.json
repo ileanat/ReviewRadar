@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "node server/server.js",
     "server": "nodemon server/server.js",
     "mock": "json-server --watch db.json --port 5100 --host 0.0.0.0",
     "dev": "vite --port 5101 --host",
