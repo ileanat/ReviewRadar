@@ -7,13 +7,12 @@ import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
-
+const environment = process.env.SERVER_ENV
 const app = express();
 
 app.use(
   cors({
-    // origin: "http://localhost:5101", // React app
-     origin: "https://reviewradar-1.onrender.com",
+     origin: environment,
     credentials: true,
   })
 );

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
+const environment = import.meta.env.VITE_CLIENT_ENV;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -12,8 +13,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     async function fetchMe() {
       try {
-        //const res = await fetch("http://localhost:8000/api/auth/me", {
-        const res = await fetch("https://reviewradar-ab0d.onrender.com/api/auth/me", {
+        const res = await fetch(`${environment}/api/auth/me`, {
           credentials: "include",
         });
         const data = await res.json();
