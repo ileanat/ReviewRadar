@@ -39,8 +39,8 @@ router.post("/register", async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false, // set true in production with HTTPS
-        sameSite: "lax",
+        secure: process.env.NODE_ENV !== 'development',
+        sameSite: process.env.NODE_ENV === 'development' ? 'lax' : 'none',
         maxAge: 7 * 24 * 60 * 60 * 1000,
       })
       .json({
