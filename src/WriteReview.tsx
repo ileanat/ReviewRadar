@@ -1,57 +1,49 @@
 // @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import Fuse from "fuse.js";
 import logo from "./assets/logo.png";
+import dictionary from "./assets/shopping_dictionary.json";
+
+const environment = import.meta.env.VITE_CLIENT_ENV;
+const fuse = new Fuse(dictionary, {
+  threshold: 0.35,
+  minMatchCharLength: 2,
+});
 
 export default function WriteReview() {
   const [product, setProduct] = useState("");
+  const [categoryInput, setCategoryInput] = useState("");
   const [formCategory, setFormCategory] = useState("");
   const [reviewText, setReviewText] = useState("");
   const [rating, setRating] = useState(0);
-  const [categorySuggestion, setCategorySuggestion] = useState(null);
-  const [loadingSuggestion, setLoadingSuggestion] = useState(false);
 
   const navigate = useNavigate();
 
-  // Fetch category suggestion as user types
-  useEffect(() => {
-    if (!formCategory.trim()) {
-      setCategorySuggestion(null);
-      return;
-    }
+  const suggestions = useMemo(() => {
+    if (!categoryInput.trim() || formCategory) return [];
+    return fuse.search(categoryInput, { limit: 5 }).map((r) => r.item);
+  }, [categoryInput, formCategory]);
 
-    const fetchSuggestion = async () => {
-      setLoadingSuggestion(true);
-      try {
-        const res = await fetch(
-          `http://localhost:8000/api/reviews/category-suggestion?input=${encodeURIComponent(formCategory)}`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setCategorySuggestion(data);
-        }
-      } catch (err) {
-        console.error("Error fetching category suggestion:", err);
-        setCategorySuggestion(null);
-      } finally {
-        setLoadingSuggestion(false);
-      }
-    };
+  const selectCategory = (word: string) => {
+    setFormCategory(word);
+    setCategoryInput("");
+  };
 
-    // Debounce to avoid too many requests
-    const timer = setTimeout(fetchSuggestion, 300);
-    return () => clearTimeout(timer);
-  }, [formCategory]);
+  const clearCategory = () => {
+    setFormCategory("");
+    setCategoryInput("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    if (!reviewText.trim()) return;
-  
-    const res = await fetch("http://localhost:8000/api/reviews", {
+
+    if (!reviewText.trim() || !formCategory) return;
+
+    const res = await fetch(`${environment}/api/reviews`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: "include",                         // 🔑 send login cookie
+      credentials: "include",
       body: JSON.stringify({
         product,
         category: formCategory,
@@ -59,7 +51,7 @@ export default function WriteReview() {
         rating,
       }),
     });
-  
+
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
       console.error("Failed to submit review:", data);
@@ -68,6 +60,7 @@ export default function WriteReview() {
     }
     setProduct("");
     setFormCategory("");
+    setCategoryInput("");
     setReviewText("");
     setRating(0);
     navigate("/browse");
@@ -118,39 +111,61 @@ export default function WriteReview() {
           </label>
           <input
             type="text"
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm 
+            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm
                        bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-400"
             placeholder="e.g., Hydrating Face Cream"
             value={product}
             onChange={(e) => setProduct(e.target.value)}
           />
 
-          {/* Category (free text, saved to DB) */}
+          {/* Category — fuzzy search, must select from suggestions */}
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Category
           </label>
-          <input
-            type="text"
-            className="w-full p-3 mb-2 border border-gray-300 rounded-lg shadow-sm 
-                       bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-400"
-            placeholder="e.g., Cosmetics, Tech, Skincare…"
-            value={formCategory}
-            onChange={(e) => setFormCategory(e.target.value)}
-          />
-          
-          {/* Category suggestion hint */}
-          {categorySuggestion && categorySuggestion.changed && (
-            <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded-lg flex items-center justify-between">
-              <div className="text-sm text-purple-700">
-                <span className="font-semibold">Did you mean:</span> <span className="italic">{categorySuggestion.suggestion}</span>?
-              </div>
-              <button
-                type="button"
-                className="ml-2 px-3 py-1 bg-purple-500 text-white text-xs font-semibold rounded hover:bg-purple-600 transition"
-                onClick={() => setFormCategory(categorySuggestion.suggestion)}
-              >
-                Use
-              </button>
+
+          {formCategory ? (
+            <div className="flex items-center gap-2 mb-4">
+              <span className="flex items-center gap-2 px-4 py-2 bg-white border border-purple-300 rounded-lg text-purple-800 font-semibold text-sm">
+                {formCategory}
+                <button
+                  type="button"
+                  onClick={clearCategory}
+                  className="text-purple-400 hover:text-purple-700 font-bold text-base leading-none"
+                  aria-label="Clear category"
+                >
+                  ×
+                </button>
+              </span>
+            </div>
+          ) : (
+            <div className="relative mb-4">
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg shadow-sm
+                           bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-400"
+                placeholder="Type to search a category…"
+                value={categoryInput}
+                onChange={(e) => setCategoryInput(e.target.value)}
+                autoComplete="off"
+              />
+              {suggestions.length > 0 && (
+                <ul className="absolute z-10 w-full mt-1 bg-white border border-purple-200 rounded-lg shadow-lg overflow-hidden">
+                  {suggestions.map((word) => (
+                    <li key={word}>
+                      <button
+                        type="button"
+                        className="w-full text-left px-4 py-2.5 text-sm !bg-white text-gray-800 hover:!bg-gray-50 transition-colors"
+                        onClick={() => selectCategory(word)}
+                      >
+                        {word}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {categoryInput.trim() && suggestions.length === 0 && (
+                <p className="mt-1 text-xs text-gray-400">No matches found. Try a different word.</p>
+              )}
             </div>
           )}
 
@@ -159,7 +174,7 @@ export default function WriteReview() {
             Your Review
           </label>
           <textarea
-            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm 
+            className="w-full p-3 mb-4 border border-gray-300 rounded-lg shadow-sm
                        bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-purple-400 resize-none"
             rows={4}
             placeholder="Write your experience here..."
@@ -200,9 +215,10 @@ export default function WriteReview() {
 
           {/* Submit Button */}
           <button
-            className="w-full px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 
-                       shadow-md font-semibold text-lg"
+            className="w-full px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600
+                       shadow-md font-semibold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleSubmit}
+            disabled={!formCategory || !reviewText.trim()}
           >
             Submit Review
           </button>

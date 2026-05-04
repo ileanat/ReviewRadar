@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard"; // adjust path if needed
 import { useAuth } from "../context/AuthContext";  // adjust path if needed
 import logo from "../assets/logo.png";             // adjust path if needed
+const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
   id?: string | number;   // might come as id or _id
@@ -26,13 +27,14 @@ const ReviewsPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("api/reviews");
+        const res = await fetch("http://localhost:8000/api/reviews");
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
         }
