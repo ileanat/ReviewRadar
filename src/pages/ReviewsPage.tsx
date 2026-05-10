@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard"; // adjust path if needed
-import { useAuth } from "../context/AuthContext";  // adjust path if needed
+import { useUser, useClerk } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";             // adjust path if needed
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
@@ -25,7 +25,8 @@ const ReviewsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
 
 
   useEffect(() => {
@@ -34,7 +35,7 @@ const ReviewsPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch("http://localhost:8000/api/reviews");
+        const res = await fetch("/api/reviews");
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
         }
@@ -151,11 +152,11 @@ const ReviewsPage: React.FC = () => {
           ) : (
             <>
               <span className="hidden sm:inline text-sm font-semibold text-purple-600">
-                Hello, {user.username} 👋
+                Hello, {user.username ?? user.firstName ?? user.primaryEmailAddress?.emailAddress} 👋
               </span>
               <button
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
-                onClick={logout}
+                onClick={() => signOut()}
               >
                 Logout
               </button>
