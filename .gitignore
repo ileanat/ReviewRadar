@@ -24,4 +24,4 @@ server/.env
 *.njsproj
 *.sln
 *.sw?
-.venv
+.venvCLAUDE.md

@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 const reviewSchema = new mongoose.Schema({
     product: {type :String, required: true},
+    clerkUserId: {type :String, required: true},
     username: {type :String},
     review: {type :String, required: true},
     category: {type :String, required: true},

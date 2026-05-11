@@ -1,16 +1,15 @@
 //@ts-nocheck
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "@clerk/clerk-react";
 
 export function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (!isLoaded) return <div>Loading...</div>;
 
-  if (!user) {
+  if (!isSignedIn) {
     return <Navigate to="/login" replace />;
   }
 
   return children;
 }
-
