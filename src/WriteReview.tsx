@@ -45,7 +45,7 @@ export default function WriteReview() {
 
     const token = await getToken();
 
-    const res = await fetch(`/api/reviews`, {
+    const res = await fetch(`${environment}/api/reviews`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
