@@ -2,12 +2,13 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";
 
 const UserReviewsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
@@ -51,11 +52,11 @@ const UserReviewsPage: React.FC = () => {
           ) : (
             <>
               <span className="hidden sm:inline text-sm font-semibold text-purple-600">
-                Hello, {user.username} 👋
+                Hello, {user.username ?? user.firstName ?? user.primaryEmailAddress?.emailAddress} 👋
               </span>
               <button
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
-                onClick={logout}
+                onClick={() => signOut()}
               >
                 Logout
               </button>

@@ -44,7 +44,14 @@ createRoot(document.getElementById('root')!).render(
           {/* Optional alias: /browse also shows ReviewsPage */}
           <Route path="/browse" element={<ReviewsPage />} />
 
-          <Route path="/profile" element={<UserReviewsPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserReviewsPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
