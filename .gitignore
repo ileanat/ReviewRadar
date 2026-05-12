@@ -25,3 +25,12 @@ server/.env
 *.sln
 *.sw?
 .venvCLAUDE.md
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
+
+review-summarizer
+.venv
