@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/reviewRoutes.js';
 import productRoutes from './routes/productRoutes.js';
-import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
 import { clerkMiddleware } from '@clerk/express';
 
@@ -22,7 +21,6 @@ app.use(
 app.use(express.json());
 app.use(clerkMiddleware());
 app.use("/uploads", express.static("uploads"));
-app.use("/api/auth", authRoutes);
 app.use('/api/products', productRoutes);
 
 
