@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import Fuse from "fuse.js";
 import logo from "./assets/logo.png";
 import dictionary from "./assets/shopping_dictionary.json";
@@ -19,6 +20,8 @@ export default function WriteReview() {
   const [rating, setRating] = useState(0);
 
   const navigate = useNavigate();
+  const { getToken } = useAuth();
+  const { user } = useUser();
 
   const suggestions = useMemo(() => {
     if (!categoryInput.trim() || formCategory) return [];
@@ -40,15 +43,20 @@ export default function WriteReview() {
 
     if (!reviewText.trim() || !formCategory) return;
 
-    const res = await fetch(`${environment}/api/reviews`, {
+    const token = await getToken();
+
+    const res = await fetch(`/api/reviews`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         product,
         category: formCategory,
         review: reviewText,
         rating,
+        username: user?.username ?? user?.firstName ?? user?.primaryEmailAddress?.emailAddress,
       }),
     });
 

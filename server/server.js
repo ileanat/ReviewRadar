@@ -6,6 +6,7 @@ import reviewRoutes from './routes/reviewRoutes.js';
 import productRoutes from './routes/productRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
+import { clerkMiddleware } from '@clerk/express';
 
 dotenv.config();
 const environment = process.env.SERVER_ENV
@@ -18,9 +19,8 @@ app.use(
   })
 );
 
-app.use(cookieParser());
-  
 app.use(express.json());
+app.use(clerkMiddleware());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
 app.use('/api/products', productRoutes);
