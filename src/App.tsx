@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import "./App.css";
 import logo from "./assets/logo.png";
-import { useAuth } from "./context/AuthContext";
+import { useUser, useClerk } from "@clerk/clerk-react";
 import makereview1 from "./assets/makereview1.png";
 
 const environment = import.meta.env.VITE_CLIENT_ENV;
@@ -21,7 +21,8 @@ function App() {
   const [formCategory, setFormCategory] = useState("");
   const [rating, setRating] = useState(0); // ⭐ new state for star rating
   const [searchTerm, setSearchTerm] = useState("");
-  const {user, logout} = useAuth();
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -151,13 +152,13 @@ function App() {
     <>
       {/* GREETING */}
       <div className="text-purple-600 text-xl font-bold">
-        Hello, {user.username} 👋
+        Hello, {user.username ?? user.firstName ?? user.primaryEmailAddress?.emailAddress} 👋
       </div>
 
       {/* LOGOUT BUTTON */}
       <button
         className="px-6 py-3 ml-4 bg-red-500 text-white rounded hover:bg-red-600 font-bold"
-        onClick={logout}
+        onClick={() => signOut()}
       >
         Logout
       </button>

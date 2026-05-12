@@ -3,8 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/reviewRoutes.js';
-import authRoutes from './routes/authRoutes.js';
-import cookieParser from 'cookie-parser';
+import { clerkMiddleware } from '@clerk/express';
 
 dotenv.config();
 const environment = process.env.SERVER_ENV
@@ -17,11 +16,9 @@ app.use(
   })
 );
 
-app.use(cookieParser());
-  
 app.use(express.json());
+app.use(clerkMiddleware());
 app.use("/uploads", express.static("uploads"));
-app.use("/api/auth", authRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)

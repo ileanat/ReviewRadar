@@ -20,7 +20,7 @@ router.post('/',requireAuth ,async (req, res) => {
         const normalizedCategory = findClosestCategory(category, existingCategories, 0.6);
         console.log(`Category input: "${category}" → matched to: "${normalizedCategory}"`);
         
-        const newReview = new Review({ product, username, review, rating, category: normalizedCategory });
+        const newReview = new Review({ product, username, review, rating, category: normalizedCategory, clerkUserId: req.user.clerkUserId });
         const savedReview = await newReview.save();
         res.status(201).json(savedReview);
     } catch (error) {

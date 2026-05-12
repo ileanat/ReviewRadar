@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ClerkProvider } from '@clerk/clerk-react';
 import './index.css';
 import App from './App.tsx';
 import LoginPage from './LoginPage.tsx';
@@ -9,8 +10,12 @@ import ReviewsPage from './pages/ReviewsPage.tsx';
 import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
-import { AuthProvider } from './context/AuthContext.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
+
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+if (!PUBLISHABLE_KEY) {
+  throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY in .env');
+}
 
 // set favicon dynamically so we can use the bundled asset from src/assets
 function setFavicon(href: string) {
@@ -27,7 +32,7 @@ setFavicon(logo);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AuthProvider>
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <Routes>
           {/* NEW HOME: use the clean ReviewsPage UI */}
@@ -54,6 +59,6 @@ createRoot(document.getElementById('root')!).render(
           />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </ClerkProvider>
   </StrictMode>
 );
