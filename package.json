@@ -10,10 +10,12 @@
     "dev": "vite --port 5101 --host",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.61.6",
+    "@clerk/express": "^2.1.15",
     "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
@@ -27,6 +29,7 @@
     "react-router-dom": "^7.9.6"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.36.4",
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
@@ -42,6 +45,7 @@
     "tailwindcss": "^3.4.18",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "wrangler": "^4.90.1"
   }
 }

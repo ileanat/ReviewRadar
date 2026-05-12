@@ -11,6 +11,7 @@ import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
+import ProductPage from './pages/ProductPage.tsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
@@ -55,6 +56,8 @@ createRoot(document.getElementById('root')!).render(
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/reviews/:id" element={<ProductPage />} />
+          <Route path="/products/:key" element={<ProductPage />} />
 
           <Route
             path="/write-review"

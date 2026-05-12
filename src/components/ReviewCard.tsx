@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 type ReviewCardProps = {
   product: string;
+  productKey: string;
   category: string;
   rating: number; // e.g. 1–5
   review: string;
@@ -14,13 +16,16 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   review,
 }) => {
   const clampedRating = Math.max(0, Math.min(5, rating));
-
   return (
     <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
       {/* Header: product + category */}
       <div className="mb-2 flex items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">{product}</h2>
+          <Link 
+            to={`/products/${product.toLowerCase().replace(/\s+/g, '')}`} 
+            state={{ displayName: product }}
+            className="text-lg font-semibold text-gray-900 hover:text-blue-600">{product}
+            </Link>
           <p className="text-sm text-gray-500">{category}</p>
         </div>
 
