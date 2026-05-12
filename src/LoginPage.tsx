@@ -28,7 +28,7 @@ export default function Login() {
       <main className="flex-1 flex items-center justify-center px-4 py-10 md:py-20">
         <SignIn
           signUpUrl="/signup"
-          fallbackRedirectUrl="/browse"
+          fallbackRedirectUrl="/"
         />
       </main>
     </div>

@@ -71,7 +71,7 @@ export default function WriteReview() {
     setCategoryInput("");
     setReviewText("");
     setRating(0);
-    navigate("/browse");
+    navigate("/");
   };
 
   return (
