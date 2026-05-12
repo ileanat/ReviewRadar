@@ -10,6 +10,7 @@ import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import { AuthProvider } from './context/AuthContext.tsx';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
+import ProductPage from './pages/ProductPage.tsx';
 
 // set favicon dynamically so we can use the bundled asset from src/assets
 function setFavicon(href: string) {
@@ -40,6 +41,7 @@ createRoot(document.getElementById('root')!).render(
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/reviews/:id" element={<ProductPage />} />
 
           <Route
             path="/write-review"

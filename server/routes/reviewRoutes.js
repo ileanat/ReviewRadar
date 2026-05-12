@@ -1,16 +1,24 @@
 import express from 'express';
 import Review from '../models/Review.js';
 import requireAuth from '../middleware/requireAuth.js';
+import Products from '../models/Products.js';
 import { findClosestCategory, getUniqueCategories } from '../utils/fuzzyMatch.js';
 
 const router = express.Router();
 
 // POST /api/reviews
 router.post('/',requireAuth ,async (req, res) => {
-    console.log("Received review data:", req.body);
     try {
         const username = req.body.username || 'Anon';
-        let { product, review, rating, category } = req.body;
+        // let { product, review, rating, category } = req.body;
+        const { product: ogName, review, rating, category } = req.body;
+        const sanitized_product = ogName.toLowerCase().replace(/\s+/g, '');
+
+        const product_parent = await Products.findOneAndUpdate(
+            { key: sanitized_product },
+            { $setOnInsert: { name: ogName.trim(), key: sanitized_product } },
+            { upsert: true, new: true, runValidators: true }
+        );
         
         // Fuzzy match the category against existing categories in the database
         const allReviews = await Review.find();
@@ -20,10 +28,11 @@ router.post('/',requireAuth ,async (req, res) => {
         const normalizedCategory = findClosestCategory(category, existingCategories, 0.6);
         console.log(`Category input: "${category}" → matched to: "${normalizedCategory}"`);
         
-        const newReview = new Review({ product, username, review, rating, category: normalizedCategory });
+        const newReview = new Review({ product: ogName.trim(), productId: product_parent._id, username, review, rating, category: normalizedCategory });
         const savedReview = await newReview.save();
         res.status(201).json(savedReview);
     } catch (error) {
+        console.error("DEBUGGING ERROR:", error);
         res.status(500).json({ message: 'Error creating review', error });
     }
 });
@@ -60,6 +69,22 @@ router.get('/category-suggestion', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching category suggestion', error });
+    }
+});
+
+router.get('/product/:item', async (req, res) => {
+    try {
+        const { item } = req.params;
+        const reviews = await Review.find({ 
+            product: { $regex: new RegExp(`^${item}$`, 'i') } 
+        }).sort({ createdAt: -1 });
+
+        if (reviews.length === 0) {
+            return res.status(404).json({ message: "No reviews found for this product" });
+        }
+        res.status(200).json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: "Server Error", error: err.message });
     }
 });
 

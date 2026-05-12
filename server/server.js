@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/reviewRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import cookieParser from 'cookie-parser';
 
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", authRoutes);
+app.use('/api/products', productRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)

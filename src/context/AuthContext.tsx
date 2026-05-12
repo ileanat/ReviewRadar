@@ -29,8 +29,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (emailOrUsername, password) => {
-    //const res = await fetch("http://localhost:8000/api/auth/login", {
-    const res = await fetch("https://reviewradar-ab0d.onrender.com/api/auth/login", {
+    const res = await fetch(`${environment}/api/auth/login`, {
       method: "POST",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
