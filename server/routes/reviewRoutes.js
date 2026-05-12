@@ -30,12 +30,14 @@ router.post('/',requireAuth ,async (req, res) => {
         
         const newReview = new Review({ 
             product: ogName,
+            productId: product_parent._id,
             username, 
             review, 
             rating, 
             category: normalizedCategory, 
-            clerkUserId: req.user.clerkUserId 
+            clerkUserId: req.auth?.userId || req.user?.clerkUserId || req.body.clerkUserId
         });
+
         const savedReview = await newReview.save();
         res.status(201).json(savedReview);
     } catch (error) {
