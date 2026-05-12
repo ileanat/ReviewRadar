@@ -1,14 +1,48 @@
 //@ts-nocheck
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser, useClerk } from "@clerk/clerk-react";
+import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
+import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
+
+type Review = {
+  _id?: string;
+  product: string;
+  category: string;
+  rating: number;
+  review: string;
+};
 
 const UserReviewsPage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { signOut } = useClerk();
+  const { getToken } = useAuth();
+
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMine = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const token = await getToken();
+        const res = await fetch("/api/reviews/mine", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+        setReviews(await res.json());
+      } catch (err: any) {
+        setError(err.message || "Failed to load your reviews");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMine();
+  }, [getToken]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
@@ -75,7 +109,26 @@ const UserReviewsPage: React.FC = () => {
         </div>
 
         <section className="rounded-2xl bg-white/80 p-6 shadow-md border border-purple-100">
-          <p className="text-sm text-gray-400">No reviews yet.</p>
+          {loading && <p className="text-sm text-gray-500">Loading your reviews...</p>}
+          {error && !loading && (
+            <p className="text-sm text-red-500">Something went wrong: {error}</p>
+          )}
+          {!loading && !error && reviews.length === 0 && (
+            <p className="text-sm text-gray-400">No reviews yet.</p>
+          )}
+          {!loading && !error && reviews.length > 0 && (
+            <div className="grid gap-4 md:grid-cols-2">
+              {reviews.map((r, i) => (
+                <ReviewCard
+                  key={r._id ?? i}
+                  product={r.product}
+                  category={r.category}
+                  rating={r.rating}
+                  review={r.review}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </main>
     </div>
