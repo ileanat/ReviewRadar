@@ -38,6 +38,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET /api/reviews/mine — reviews authored by the signed-in Clerk user
+router.get('/mine', requireAuth, async (req, res) => {
+    try {
+        const reviews = await Review.find({ clerkUserId: req.user.clerkUserId }).sort({ _id: -1 });
+        res.status(200).json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user reviews', error });
+    }
+});
+
 // GET /api/reviews/category-suggestion?input=technlgy
 // Returns the matched category for a given user input (for frontend preview)
 router.get('/category-suggestion', async (req, res) => {

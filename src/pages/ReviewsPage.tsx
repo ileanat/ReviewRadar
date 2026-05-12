@@ -155,6 +155,12 @@ const ReviewsPage: React.FC = () => {
                 Hello, {user.username ?? user.firstName ?? user.primaryEmailAddress?.emailAddress} 👋
               </span>
               <button
+                className="px-4 py-2 text-sm font-semibold rounded-full bg-purple-500 text-white hover:bg-purple-600 transition"
+                onClick={() => navigate("/profile")}
+              >
+                My Reviews
+              </button>
+              <button
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
                 onClick={() => signOut()}
               >

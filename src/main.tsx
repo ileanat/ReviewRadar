@@ -7,6 +7,7 @@ import App from './App.tsx';
 import LoginPage from './LoginPage.tsx';
 import SignUpPage from './SignUpPage.tsx';
 import ReviewsPage from './pages/ReviewsPage.tsx';
+import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
@@ -42,6 +43,15 @@ createRoot(document.getElementById('root')!).render(
 
           {/* Optional alias: /browse also shows ReviewsPage */}
           <Route path="/browse" element={<ReviewsPage />} />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <UserReviewsPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
