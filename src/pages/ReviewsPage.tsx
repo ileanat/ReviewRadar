@@ -100,7 +100,7 @@ const ReviewsPage: React.FC = () => {
     });
 
   // pagination 
-  const RESULTS_PER_PAGE = 5 // change this to whatever value. leaving at 5 for now
+  const RESULTS_PER_PAGE = 6 // change this to whatever value. leaving at 5 for now
   const totalPages = Math.ceil(filteredReviews.length / RESULTS_PER_PAGE);
   const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
   const paginatedResults = filteredReviews.slice(startIndex, startIndex + RESULTS_PER_PAGE);

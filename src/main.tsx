@@ -12,6 +12,7 @@ import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import ProductPage from './pages/ProductPage.tsx';
+import ClickSpark from './components/ClickSpark.tsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
@@ -33,11 +34,12 @@ setFavicon(logo);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <BrowserRouter>
-        <Routes>
-          {/* NEW HOME: use the clean ReviewsPage UI */}
-          <Route path="/" element={<ReviewsPage />} />
+    {/*<ClickSpark sparkColor="#fdfdfdff" sparkSize={10} sparkRadius={10} sparkCount={8} duration={400}>*/}
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <BrowserRouter>
+          <Routes>
+            {/* NEW HOME: use the clean ReviewsPage UI */}
+            <Route path="/" element={<ReviewsPage />} />
 
           {/* Optional: keep old cat home at /old-home */}
           <Route path="/old-home" element={<App />} />
@@ -70,5 +72,6 @@ createRoot(document.getElementById('root')!).render(
         </Routes>
       </BrowserRouter>
     </ClerkProvider>
+    {/*</ClickSpark>*/}
   </StrictMode>
 );
