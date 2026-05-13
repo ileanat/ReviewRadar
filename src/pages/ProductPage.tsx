@@ -67,7 +67,7 @@ const ProductPage = () => {
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
         </div>
-        <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
           ← Back to Home
         </button>
       </header>
@@ -85,7 +85,7 @@ const ProductPage = () => {
             <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
             <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
           </div>
-          <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+          <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
             ← Back to Home
           </button>
         </header>
@@ -103,7 +103,7 @@ const ProductPage = () => {
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
         </div>
-        <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
           ← Back to Home
         </button>
       </header>

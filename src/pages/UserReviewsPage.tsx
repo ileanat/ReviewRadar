@@ -121,6 +121,7 @@ const UserReviewsPage: React.FC = () => {
               {reviews.map((r, i) => (
                 <ReviewCard
                   key={r._id ?? i}
+                  reviewId={String(r._id ?? i)}
                   product={r.product}
                   category={r.category}
                   rating={r.rating}

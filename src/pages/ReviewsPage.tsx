@@ -158,7 +158,7 @@ const ReviewsPage: React.FC = () => {
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-purple-500 text-white hover:bg-purple-600 transition"
                 onClick={() => navigate("/profile")}
               >
-                My Reviews
+                My Profile
               </button>
               <button
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
@@ -262,6 +262,7 @@ const ReviewsPage: React.FC = () => {
                     {paginatedResults.map((review, index) => (
                     <ReviewCard
                         key={review.id ?? review._id ?? index}
+                        reviewId={String(review._id ?? review.id ?? index)}
                         product={review.product}
                         category={review.category}
                         rating={review.rating}
