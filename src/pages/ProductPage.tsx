@@ -62,7 +62,7 @@ const ProductPage = () => {
 
   if (!data) return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
@@ -80,7 +80,7 @@ const ProductPage = () => {
   if (!data.product) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-        <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+        <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
             <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
             <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
@@ -98,7 +98,7 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>

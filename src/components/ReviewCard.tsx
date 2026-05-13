@@ -116,10 +116,10 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       <p className="mt-2 text-sm leading-relaxed text-gray-800">{review}</p>
 
       {/* Thumbs up / down */}
-      <div className="mt-3 flex items-center gap-3 border-t border-gray-100 pt-3">
+      <div className="mt-2 flex items-center gap-2 border-t border-gray-100 pt-2">
         <button
           onClick={() => handleVote("up")}
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium transition
+          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium transition
             ${userVote === "up"
               ? "bg-green-100 text-green-700"
               : "bg-gray-100 text-gray-500 hover:bg-green-50 hover:text-green-600"}`}
@@ -128,7 +128,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         </button>
         <button
           onClick={() => handleVote("down")}
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-medium transition
+          className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium transition
             ${userVote === "down"
               ? "bg-red-100 text-red-600"
               : "bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500"}`}

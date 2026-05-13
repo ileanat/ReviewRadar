@@ -47,7 +47,7 @@ const UserReviewsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header — matches ReviewsPage */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
@@ -108,7 +108,7 @@ const UserReviewsPage: React.FC = () => {
           </p>
         </div>
 
-        <section className="rounded-2xl bg-white/80 p-6 shadow-md border border-purple-100">
+        <section className="rounded-2xl bg-white p-6 shadow-md border border-purple-100">
           {loading && <p className="text-sm text-gray-500">Loading your reviews...</p>}
           {error && !loading && (
             <p className="text-sm text-red-500">Something went wrong: {error}</p>

@@ -104,7 +104,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
@@ -178,7 +178,7 @@ const ProfilePage: React.FC = () => {
 
         {/* Change display name modal */}
         {showNameModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
             <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-purple-100">
               <h2 className="text-lg font-bold text-gray-900 mb-1">Change display name</h2>
               <p className="text-xs text-gray-500 mb-4">This updates your username shown across ReviewRadar.</p>
@@ -237,7 +237,7 @@ const ProfilePage: React.FC = () => {
         <section>
           <h2 className="text-xl font-bold text-gray-900 mb-4">My Reviews</h2>
 
-          <div className="rounded-2xl bg-white/80 border border-purple-100 shadow-md p-6">
+          <div className="rounded-2xl bg-white border border-purple-100 shadow-md p-6">
             {loading && (
               <p className="text-sm text-gray-500">Loading your reviews...</p>
             )}
