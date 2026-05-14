@@ -62,12 +62,12 @@ const ProductPage = () => {
 
   if (!data) return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
         </div>
-        <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
           ← Back to Home
         </button>
       </header>
@@ -80,12 +80,12 @@ const ProductPage = () => {
   if (!data.product) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-        <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+        <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
             <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
             <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
           </div>
-          <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+          <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
             ← Back to Home
           </button>
         </header>
@@ -98,12 +98,12 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
           <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
           <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
         </div>
-        <button onClick={() => navigate("/")} className="px-5 py-2 rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
+        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
           ← Back to Home
         </button>
       </header>

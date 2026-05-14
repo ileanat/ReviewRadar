@@ -109,7 +109,7 @@ const ReviewsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Top bar: logo + title + auth / nav */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white/80 backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
         {/* Left: logo + name */}
         <div
           className="flex items-center gap-3 cursor-pointer"
@@ -158,7 +158,7 @@ const ReviewsPage: React.FC = () => {
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-purple-500 text-white hover:bg-purple-600 transition"
                 onClick={() => navigate("/profile")}
               >
-                My Reviews
+                My Profile
               </button>
               <button
                 className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
@@ -211,7 +211,7 @@ const ReviewsPage: React.FC = () => {
         {/* Layout: left filters, right reviews */}
         <div className="grid gap-6 lg:grid-cols-[260px,1fr]">
           {/* Category filter panel */}
-          <aside className="rounded-2xl bg-white/80 p-4 shadow-md border border-purple-100">
+          <aside className="rounded-2xl bg-white p-4 shadow-md border border-purple-100">
             <h2 className="mb-3 text-sm font-semibold text-gray-800">
               Categories
             </h2>
@@ -238,7 +238,7 @@ const ReviewsPage: React.FC = () => {
           </aside>
 
           {/* Reviews panel */}
-          <section className="rounded-2xl bg-white/80 p-4 sm:p-6 shadow-md border border-purple-100">
+          <section className="rounded-2xl bg-white p-4 sm:p-6 shadow-md border border-purple-100">
             {/* Loading / error states */}
             {loading && (
               <p className="text-sm text-gray-500">Loading reviews...</p>
@@ -262,6 +262,7 @@ const ReviewsPage: React.FC = () => {
                     {paginatedResults.map((review, index) => (
                     <ReviewCard
                         key={review.id ?? review._id ?? index}
+                        reviewId={String(review._id ?? review.id ?? index)}
                         product={review.product}
                         category={review.category}
                         rating={review.rating}
