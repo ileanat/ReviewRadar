@@ -7,13 +7,13 @@ import App from './App.tsx';
 import LoginPage from './LoginPage.tsx';
 import SignUpPage from './SignUpPage.tsx';
 import ReviewsPage from './pages/ReviewsPage.tsx';
-import UserReviewsPage from './pages/UserReviewsPage.tsx';
+// import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import ProductPage from './pages/ProductPage.tsx';
-import ClickSpark from './components/ClickSpark.tsx';
+// import ClickSpark from './components/ClickSpark.tsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
