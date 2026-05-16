@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(clerkMiddleware());
 app.use("/uploads", express.static("uploads"));
 app.use('/api/products', productRoutes);
+app.use('/api/reviews', reviewRoutes)
 
 
 mongoose.connect(process.env.MONGO_URI)
@@ -31,8 +32,6 @@ mongoose.connect(process.env.MONGO_URI)
     console.error("Error connecting to MongoDB:", err);
 });
 
-
-app.use('/api/reviews', reviewRoutes)
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

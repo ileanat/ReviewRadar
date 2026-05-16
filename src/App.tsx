@@ -7,6 +7,8 @@ import "./App.css";
 import logo from "./assets/logo.png";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import makereview1 from "./assets/makereview1.png";
+import ReviewCard from "./components/ReviewCard";
+
 
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
@@ -22,7 +24,7 @@ function App() {
   const [rating, setRating] = useState(0); // ⭐ new state for star rating
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useUser();
-  const { signOut } = useClerk();
+  const { signOut, session } = useClerk();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,8 +32,27 @@ function App() {
     //{id, product, review, category, rating}
 
     //api endpoint: http://localhost:8000/api/reviews
+
+    const fetchReviews = async () => {
+    try {
+      const token = await session?.getToken();
+
+      const response = await fetch(`${environment}/api/reviews`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      setReviews(data);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  fetchReviews();
+  }, [session]); 
     
-  }, []);
 
   const handleSubmit = () => {
   if (reviewText.trim() === "") return;
@@ -44,7 +65,6 @@ function App() {
   fetch(`${environment}/api/reviews`, requestOptions)
     .then(response => response.json())
     .then(data => {
-      console.log('Success:', data);
 
       setReviews(prev => [...prev, data]); // add new review to state
     })
@@ -269,11 +289,17 @@ function App() {
 <div className="mt-6 text-left px-6">
  {selectedCategory ? (
   [...filteredReviews].reverse().map((r) => (
-    <div key={r.id} className="p-4 border-b border-gray-300">
-      <h3 className="font-semibold text-purple-400">{r.product}</h3>
-      <p>{r.review}</p>
-      <p className="text-sm text-gray-400">⭐ {r.rating}/5</p>
-    </div>
+    <ReviewCard 
+  key={r._id} 
+  reviewId={r._id}
+  product={r.product}
+  category={r.category}
+  review={r.review}
+  rating={r.rating}
+  thumbsupCount={r.thumbsupCount || 0}
+  thumbsdownCount={r.thumbsdownCount || 0}
+  userVote={r.userVote} 
+/>
   ))
 ) : null}
 </div>
