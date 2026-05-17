@@ -75,7 +75,6 @@ router.post('/vote', requireAuth, async (req, res) => {
         if (!user) {
             user = new User({
                 clerkUserId: clerkId,
-                username: req.user.username,
                 likedReviews: [],
                 dislikedReviews: []
             });
