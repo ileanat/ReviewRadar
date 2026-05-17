@@ -68,7 +68,7 @@ router.post('/vote', requireAuth, async (req, res) => {
 
         if (review.clerkUserId === clerkId) {
             return res.status(403).json({ 
-                message: "You cannot vote on your own review!" 
+                message: "You can't vote on your own reviews." 
             });
         }
 
@@ -87,11 +87,12 @@ router.post('/vote', requireAuth, async (req, res) => {
         if (voteType === 'up') {
             if (user.likedReviews.includes(reviewId)) {
                 user.likedReviews.pull(reviewId);
-                review.thumbsupCount = Math.max(0, review.thumbsupCount - 1);
-                userAction = null;
+                review.thumbsupCount = Math.max(0, review.thumbsupCount - 1); // if the current user already gave the review a thumbs up and clicks the button again
+                                                                                // decreament its value by 1, using max to avoid the value from going to the negatives
+                userAction = null; // do nothing 
             } else {
                 user.likedReviews.push(reviewId);
-                review.thumbsupCount += 1;
+                review.thumbsupCount += 1; // otherwise increment the value by 1
             
                 if (user.dislikedReviews.includes(reviewId)) {
                     user.dislikedReviews.pull(reviewId);
@@ -101,7 +102,7 @@ router.post('/vote', requireAuth, async (req, res) => {
         } else if (voteType === 'down') {
             if (user.dislikedReviews.includes(reviewId)) {
                 user.dislikedReviews.pull(reviewId);
-                review.thumbsdownCount = Math.max(0, review.thumbsdownCount - 1);
+                review.thumbsdownCount = Math.max(0, review.thumbsdownCount - 1); // same explanation as above
                 userAction = null;
             } else {
                 user.dislikedReviews.push(reviewId);
@@ -123,7 +124,6 @@ router.post('/vote', requireAuth, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("VOTING ERROR:", error);
         res.status(500).json({ message: "Server error", error: error.message });
     }
 });
@@ -131,20 +131,20 @@ router.post('/vote', requireAuth, async (req, res) => {
 // GET /api/reviews
 router.get('/', async (req, res) => {
   try {
-    const reviews = await Review.find().sort({ _id: -1 }).select(['-clerkUserId','-username']);
 
-    const reviewsWithVotes = reviews.map(rev => {
-      const revObj = rev.toObject();
-      revObj.thumbsupCount = rev.thumbsupCount ?? 0;
-      revObj.thumbsdownCount = rev.thumbsdownCount ?? 0;
-      revObj.userVote = null; 
+    const reviews = await Review.find().sort({ _id: -1 }).select(['-clerkUserId','-username']); // do not remove the .select otherwise this information will be exposed
+
+    const filteredReviews = reviews.map(r => { // may need to add more fields if we require more model mapping info
+      const review = r.toObject();
+      review.thumbsupCount = r.thumbsupCount ?? 0;
+      review.thumbsdownCount = r.thumbsdownCount ?? 0;
+      review.userVote = null; 
       
-      return revObj;
+      return review;
     });
 
-    return res.status(200).json(reviewsWithVotes);
+    return res.status(200).json(filteredReviews);
   } catch (error) {
-    console.error("GET Error:", error);
     return res.status(500).json({ message: 'Error', error });
   }
 });
@@ -189,11 +189,12 @@ router.get('/product/:item', async (req, res) => {
         const { item } = req.params;
         const reviews = await Review.find({ 
             product: { $regex: new RegExp(`^${item}$`, 'i') } 
-        }).sort({ createdAt: -1 }).select(['-clerkUserId','-username']);
+        }).sort({ createdAt: -1 }).select(['-clerkUserId','-username']); // do not remove .select otherwise this info would be exposed.
 
         if (reviews.length === 0) {
             return res.status(404).json({ message: "No reviews found for this product" });
         }
+
         res.status(200).json(reviews);
     } catch (err) {
         res.status(500).json({ message: "Server Error", error: err.message });

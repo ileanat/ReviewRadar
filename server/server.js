@@ -4,7 +4,6 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/reviewRoutes.js';
 import productRoutes from './routes/productRoutes.js';
-import cookieParser from 'cookie-parser';
 import { clerkMiddleware } from '@clerk/express';
 
 dotenv.config();
