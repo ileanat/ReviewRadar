@@ -59,7 +59,6 @@ router.post('/',requireAuth ,async (req, res) => {
 router.post('/vote', requireAuth, async (req, res) => {
     const { reviewId, voteType } = req.body;
     const clerkId = req.user.clerkUserId;
-
     try {
         const review = await Review.findById(reviewId);
         if (!review) {
