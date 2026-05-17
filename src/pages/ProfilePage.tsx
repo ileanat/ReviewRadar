@@ -11,6 +11,9 @@ type Review = {
   rating: number;
   review: string;
   createdAt?: string;
+  thumbsupCount?: number;
+  thumbsdownCount?: number;
+  
 };
 
 function getTotalThumbsUp(reviewIds: string[]): number {
@@ -265,6 +268,10 @@ const ProfilePage: React.FC = () => {
                     category={r.category}
                     rating={r.rating}
                     review={r.review}
+                    thumbsupCount={r.thumbsupCount ?? 0}
+                    thumbsdownCount={r.thumbsdownCount ?? 0}
+                    userVote={null}
+                    onVote={() => {}}
                   />
                 ))}
               </div>
