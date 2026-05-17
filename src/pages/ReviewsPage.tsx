@@ -267,6 +267,8 @@ const ReviewsPage: React.FC = () => {
                         category={review.category}
                         rating={review.rating}
                         review={review.review}
+                        thumbsupCount={review.thumbsupCount ?? 0}   
+                        thumbsdownCount={review.thumbsdownCount ?? 0}
                     />
                     ))}
                 </div>

@@ -2,6 +2,9 @@ import express from 'express';
 import Review from '../models/Review.js';
 import requireAuth from '../middleware/requireAuth.js';
 import Products from '../models/Products.js';
+import User from '../models/Users.js'
+import { getAuth } from '@clerk/express';
+import { checkUser } from '../middleware/checkUser.js';
 import { findClosestCategory, getUniqueCategories } from '../utils/fuzzyMatch.js';
 
 const router = express.Router();
@@ -21,12 +24,11 @@ router.post('/',requireAuth ,async (req, res) => {
         );
         
         // Fuzzy match the category against existing categories in the database
-        const allReviews = await Review.find();
-        const existingCategories = getUniqueCategories(allReviews);
+        const allReviews = await Review.find().select(['-clerkUserId','-username']);
+        const existingCategories = await Review.distinct('category');
         
         // Find the closest matching category (or use original if no match)
         const normalizedCategory = findClosestCategory(category, existingCategories, 0.6);
-        console.log(`Category input: "${category}" → matched to: "${normalizedCategory}"`);
         
         const newReview = new Review({ 
             product: ogName,
@@ -35,25 +37,116 @@ router.post('/',requireAuth ,async (req, res) => {
             review, 
             rating, 
             category: normalizedCategory, 
-            clerkUserId: req.auth?.userId || req.user?.clerkUserId || req.body.clerkUserId
+            clerkUserId: req.user.clerkUserId
         });
 
         const savedReview = await newReview.save();
-        res.status(201).json(savedReview);
+        const reviewResponse = savedReview.toObject();
+        delete reviewResponse.clerkUserId;
+        delete reviewResponse.__v;
+
+
+        res.status(201).json(reviewResponse);
     } catch (error) {
         console.error("DEBUGGING ERROR:", error);
+        if (error.code === 11000) {
+        return res.status(400).json({ message: "You have already reviewed this product!" });
+    }
         res.status(500).json({ message: 'Error creating review', error });
+    }
+});
+
+router.post('/vote', requireAuth, async (req, res) => {
+    const { reviewId, voteType } = req.body;
+    const clerkId = req.user.clerkUserId;
+
+    try {
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ message: "Review not found" });
+        }
+
+        if (review.clerkUserId === clerkId) {
+            return res.status(403).json({ 
+                message: "You can't vote on your own reviews." 
+            });
+        }
+
+        let user = await User.findOne({ clerkUserId: clerkId });
+        if (!user) {
+            user = new User({
+                clerkUserId: clerkId,
+                likedReviews: [],
+                dislikedReviews: []
+            });
+            await user.save();
+        }
+        
+        let userAction = voteType;
+
+        if (voteType === 'up') {
+            if (user.likedReviews.includes(reviewId)) {
+                user.likedReviews.pull(reviewId);
+                review.thumbsupCount = Math.max(0, review.thumbsupCount - 1); // if the current user already gave the review a thumbs up and clicks the button again
+                                                                                // decreament its value by 1, using max to avoid the value from going to the negatives
+                userAction = null; // do nothing 
+            } else {
+                user.likedReviews.push(reviewId);
+                review.thumbsupCount += 1; // otherwise increment the value by 1
+            
+                if (user.dislikedReviews.includes(reviewId)) {
+                    user.dislikedReviews.pull(reviewId);
+                    review.thumbsdownCount = Math.max(0, review.thumbsdownCount - 1);
+                }
+            }
+        } else if (voteType === 'down') {
+            if (user.dislikedReviews.includes(reviewId)) {
+                user.dislikedReviews.pull(reviewId);
+                review.thumbsdownCount = Math.max(0, review.thumbsdownCount - 1); // same explanation as above
+                userAction = null;
+            } else {
+                user.dislikedReviews.push(reviewId);
+                review.thumbsdownCount += 1;
+
+                if (user.likedReviews.includes(reviewId)) {
+                    user.likedReviews.pull(reviewId);
+                    review.thumbsupCount = Math.max(0, review.thumbsupCount - 1);
+                }
+            }
+        }
+
+        await Promise.all([user.save(), review.save()]);
+
+        res.status(200).json({
+            newUpCount: review.thumbsupCount,
+            newDownCount: review.thumbsdownCount,
+            userAction: userAction
+        });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
 // GET /api/reviews
 router.get('/', async (req, res) => {
-    try {
-        const reviews = await Review.find().sort({ _id: -1 });
-        res.status(200).json(reviews);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching reviews', error });
-    }
+  try {
+
+    const reviews = await Review.find().sort({ _id: -1 }).select(['-clerkUserId','-username']); // do not remove the .select otherwise this information will be exposed
+
+    const filteredReviews = reviews.map(r => { // may need to add more fields if we require more model mapping info
+      const review = r.toObject();
+      review.thumbsupCount = r.thumbsupCount ?? 0;
+      review.thumbsdownCount = r.thumbsdownCount ?? 0;
+      review.userVote = null; 
+      
+      return review;
+    });
+
+    return res.status(200).json(filteredReviews);
+  } catch (error) {
+    return res.status(500).json({ message: 'Error', error });
+  }
 });
 
 // GET /api/reviews/mine — reviews authored by the signed-in Clerk user
@@ -76,7 +169,7 @@ router.get('/category-suggestion', async (req, res) => {
             return res.status(400).json({ message: 'Missing input parameter' });
         }
 
-        const allReviews = await Review.find();
+        const allReviews = await Review.find().select(['-clerkUserId','-username']);
         const existingCategories = getUniqueCategories(allReviews);
         
         const matchedCategory = findClosestCategory(input, existingCategories, 0.6);
@@ -96,11 +189,12 @@ router.get('/product/:item', async (req, res) => {
         const { item } = req.params;
         const reviews = await Review.find({ 
             product: { $regex: new RegExp(`^${item}$`, 'i') } 
-        }).sort({ createdAt: -1 });
+        }).sort({ createdAt: -1 }).select(['-clerkUserId','-username']); // do not remove .select otherwise this info would be exposed.
 
         if (reviews.length === 0) {
             return res.status(404).json({ message: "No reviews found for this product" });
         }
+
         res.status(200).json(reviews);
     } catch (err) {
         res.status(500).json({ message: "Server Error", error: err.message });
