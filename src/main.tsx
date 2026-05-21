@@ -10,6 +10,7 @@ import ReviewsPage from './pages/ReviewsPage.tsx';
 import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
+import blink_logo from './assets/blink_logo.gif';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import ProductPage from './pages/ProductPage.tsx';
 import ClickSpark from './components/ClickSpark.tsx';
@@ -34,19 +35,13 @@ setFavicon(logo);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/*<ClickSpark sparkColor="#fdfdfdff" sparkSize={10} sparkRadius={10} sparkCount={8} duration={400}>*/}
-      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-        <BrowserRouter>
-          <Routes>
-            {/* NEW HOME: use the clean ReviewsPage UI */}
-            <Route path="/" element={<ReviewsPage />} />
-
-          {/* Optional: keep old cat home at /old-home */}
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      {/*<ClickSpark sparkColor="#fdfdfdff" sparkSize={10} sparkRadius={10} sparkCount={8} duration={400}>*/}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ReviewsPage />} />
           <Route path="/old-home" element={<App />} />
-
-          {/* Optional alias: /browse also shows ReviewsPage */}
           <Route path="/browse" element={<ReviewsPage />} />
-
           <Route
             path="/profile"
             element={
@@ -55,12 +50,10 @@ createRoot(document.getElementById('root')!).render(
               </ProtectedRoute>
             }
           />
-
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reviews/:id" element={<ProductPage />} />
           <Route path="/products/:key" element={<ProductPage />} />
-
           <Route
             path="/write-review"
             element={
@@ -71,7 +64,7 @@ createRoot(document.getElementById('root')!).render(
           />
         </Routes>
       </BrowserRouter>
+      {/*</ClickSpark>*/}
     </ClerkProvider>
-    {/*</ClickSpark>*/}
   </StrictMode>
 );

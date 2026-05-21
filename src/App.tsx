@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import "./index.css";
 import "./App.css";
 import logo from "./assets/logo.png";
+import blink_logo from "./assets/blink_logo.gif";
+import close_logo from "./assets/close_logo.png";
+import open_logo from "./assets/open_logo.png";
 import { useUser, useClerk } from "@clerk/clerk-react";
 import makereview1 from "./assets/makereview1.png";
 
@@ -24,6 +27,20 @@ function App() {
   const { user } = useUser();
   const { signOut } = useClerk();
   const navigate = useNavigate();
+
+  const [currentLogo, setCurrentLogo] = useState(open_logo);
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentLogo(close_logo);
+
+    setTimeout(() => {
+      setCurrentLogo(open_logo);
+    }, 1000);
+  }, 10000);
+
+  return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     // Connect to backend to fetch reviews- including star ratings
@@ -115,10 +132,21 @@ function App() {
   return (
   <>
 
-    {/* Top-left logo + title */}
-<div className="fixed top-4 left-4 flex items-center space-x-4 z-50">
-  <img src={logo} alt="Logo" className="w-24 h-auto" /> {/* increased from w-16 to w-24 */}
-  <h1 className="text-purple-500 text-4xl font-bold"> {/* increased from text-2xl to text-4xl */}
+  {/* Top-left logo + title */}
+  <div className="fixed top-4 left-4 flex items-center space-x-4 z-50">
+  
+  <button
+    onClick={() => navigate("/")}
+    className="bg-transparent border-none p-0 cursor-pointer"
+  >
+    <img
+      src={logo}
+      alt="Logo"
+      className="w-24 h-auto hover:scale-105 transition-transform duration-300"
+    />
+  </button>
+
+  <h1 className="text-purple-500 text-4xl font-bold">
     ReviewRadar
   </h1>
 </div>

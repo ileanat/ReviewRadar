@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ReviewCard from "../components/ReviewCard"; // adjust path if needed
+import ReviewCard from "../components/ReviewCard"; 
 import { useUser, useClerk } from "@clerk/clerk-react";
-import logo from "../assets/logo.png";             // adjust path if needed
+import logo from "../assets/logo.png";             
+import open_logo from "../assets/open_logo.png";   
+import close_logo from "../assets/close_logo.png";
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
@@ -20,9 +22,10 @@ const ReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState<string>("");  // 🔍 search term
+  const [searchTerm, setSearchTerm] = useState<string>("");  
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentLogo, setCurrentLogo] = useState(open_logo);
 
   const navigate = useNavigate();
   const { user } = useUser();
@@ -51,6 +54,18 @@ const ReviewsPage: React.FC = () => {
     };
 
     fetchReviews();
+  }, []);
+
+  useEffect(() => {
+  const interval = setInterval(() => {
+    setCurrentLogo(close_logo);
+
+    setTimeout(() => {
+      setCurrentLogo(open_logo);
+    }, 250); // blink duration
+  }, 4000); // every 4 sec- adjust if we'd like it more or less frequent
+
+  return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -115,7 +130,11 @@ const ReviewsPage: React.FC = () => {
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
+          <img
+            src={currentLogo}
+            alt="ReviewRadar logo"
+            className="w-16 h-auto transition-all duration-200"
+          />
           <span className="text-2xl font-extrabold text-purple-500">
             ReviewRadar
           </span>
