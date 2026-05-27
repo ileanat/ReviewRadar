@@ -6,6 +6,9 @@ import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
 import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
 
+const environment = import.meta.env.VITE_CLIENT_ENV;
+
+
 type Review = {
   _id?: string;
   product: string;
@@ -30,7 +33,7 @@ const UserReviewsPage: React.FC = () => {
         setLoading(true);
         setError(null);
         const token = await getToken();
-        const res = await fetch("/api/reviews/mine", {
+        const res = await fetch(`${environment}/api/reviews/mine`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
