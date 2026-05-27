@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
 import ReviewCard from "../components/ReviewCard";
@@ -14,17 +14,7 @@ type Review = {
   createdAt?: string;
   thumbsupCount?: number;
   thumbsdownCount?: number;
-  
 };
-
-function getTotalThumbsUp(reviewIds: string[]): number {
-  try {
-    const counts = JSON.parse(localStorage.getItem("rr_vote_counts") || "{}");
-    return reviewIds.reduce((sum, id) => sum + (counts[id]?.up ?? 0), 0);
-  } catch {
-    return 0;
-  }
-}
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
@@ -35,35 +25,44 @@ const ProfilePage: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [thumbsUp, setThumbsUp] = useState(0);
 
   const [showNameModal, setShowNameModal] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchMine = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const token = await getToken();
-        const res = await fetch(`${environment}/api/reviews/mine`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-        const data: Review[] = await res.json();
-        setReviews(data);
-        const ids = data.map((r) => r._id).filter(Boolean) as string[];
-        setThumbsUp(getTotalThumbsUp(ids));
-      } catch (err: any) {
-        setError(err.message || "Failed to load your reviews");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMine();
+  const fetchMine = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const token = await getToken();
+      const res = await fetch(`${environment}/api/reviews/mine`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+      setReviews(await res.json());
+    } catch (err: any) {
+      setError(err.message || "Failed to load your reviews");
+    } finally {
+      setLoading(false);
+    }
   }, [getToken]);
+
+  useEffect(() => {
+    fetchMine();
+  }, [fetchMine]);
+
+  // Refetch when user tabs back so vote counts stay fresh
+  useEffect(() => {
+    const onFocus = () => fetchMine();
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [fetchMine]);
+
+  // Stats derived from fetched reviews
+  const totalUp = reviews.reduce((sum, r) => sum + (r.thumbsupCount ?? 0), 0);
+  const totalDown = reviews.reduce((sum, r) => sum + (r.thumbsdownCount ?? 0), 0);
+  const totalInteractions = totalUp + totalDown;
 
   const displayName =
     user?.username ?? user?.firstName ?? user?.primaryEmailAddress?.emailAddress ?? "User";
@@ -72,11 +71,6 @@ const ProfilePage: React.FC = () => {
     user?.firstName && user?.lastName
       ? `${user.firstName} ${user.lastName}`
       : user?.firstName ?? null;
-
-  const avgRating =
-    reviews.length > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-      : null;
 
   const openNameModal = () => {
     setNameInput(user?.username ?? user?.firstName ?? "");
@@ -108,7 +102,7 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
+      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white sticky top-0 z-40">
         <div
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
@@ -175,7 +169,7 @@ const ProfilePage: React.FC = () => {
               onClick={openNameModal}
               className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white border border-purple-300 px-3 py-1 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition"
             >
-              ✏️ Change display name
+              ✏️ Change username
             </button>
           </div>
         </div>
@@ -184,8 +178,8 @@ const ProfilePage: React.FC = () => {
         {showNameModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
             <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-purple-100">
-              <h2 className="text-lg font-bold text-gray-900 mb-1">Change display name</h2>
-              <p className="text-xs text-gray-500 mb-4">This updates your username shown across ReviewRadar.</p>
+              <h2 className="text-lg font-bold text-gray-900 mb-1">Change username</h2>
+              <p className="text-xs text-gray-500 mb-4">This updates the username shown across ReviewRadar.</p>
               <input
                 type="text"
                 value={nameInput}
@@ -224,16 +218,16 @@ const ProfilePage: React.FC = () => {
             <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Reviews</p>
           </div>
           <div className="rounded-2xl bg-white border border-purple-100 shadow-sm p-5 text-center">
-            <p className="text-3xl font-extrabold text-yellow-400">
-              {avgRating ? `★ ${avgRating}` : "—"}
-            </p>
-            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Avg Rating Given</p>
+            <p className="text-3xl font-extrabold text-violet-500">{totalInteractions}</p>
+            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Interactions Received</p>
           </div>
           <div className="rounded-2xl bg-white border border-purple-100 shadow-sm p-5 text-center">
-            <p className="text-3xl font-extrabold text-green-500">
-              👍 {thumbsUp}
+            <p className="text-2xl font-extrabold">
+              <span className="text-green-500">👍 {totalUp}</span>
+              <span className="text-gray-300 mx-1">/</span>
+              <span className="text-red-400">👎 {totalDown}</span>
             </p>
-            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Thumbs Up</p>
+            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Votes Received</p>
           </div>
         </div>
 
@@ -260,7 +254,7 @@ const ProfilePage: React.FC = () => {
               </div>
             )}
             {!loading && !error && reviews.length > 0 && (
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 items-stretch">
                 {reviews.map((r, i) => (
                   <ReviewCard
                     key={r._id ?? i}

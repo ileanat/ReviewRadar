@@ -277,7 +277,7 @@ const ReviewsPage: React.FC = () => {
                   </p>
                 ) : (
                   <> {/* <-- using this to wrap review and pagination elements, if more things are added in the future add them under this */}
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 md:grid-cols-2 items-stretch">
                     {paginatedResults.map((review, index) => (
                     <ReviewCard
                         key={review.id ?? review._id ?? index}

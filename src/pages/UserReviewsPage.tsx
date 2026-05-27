@@ -120,7 +120,7 @@ const UserReviewsPage: React.FC = () => {
             <p className="text-sm text-gray-400">No reviews yet.</p>
           )}
           {!loading && !error && reviews.length > 0 && (
-            <div className="grid gap-4 md:grid-cols-2">
+            <div className="grid gap-4 md:grid-cols-2 items-stretch">
               {reviews.map((r, i) => (
                 <ReviewCard
                   key={r._id ?? i}
