@@ -20,13 +20,15 @@ type Review = {
   thumbsupCount?: number;
   thumbsdownCount?: number;
   userVote?: "up" | "down" | null;
+  createdAt?: string;
 };
 
 const ReviewsPage: React.FC = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState<string>("");  
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"newest" | "highest" | "lowest">("newest");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [currentLogo, setCurrentLogo] = useState(open_logo);
@@ -74,7 +76,7 @@ const ReviewsPage: React.FC = () => {
 
   useEffect(() => {
     setCurrentPage(1);
-        }, [searchTerm, selectedCategory]);
+        }, [searchTerm, selectedCategory, sortBy]);
 
 
   // functions for pagination, couldn't find where frontend functions are kept so I added them here.
@@ -119,11 +121,21 @@ const ReviewsPage: React.FC = () => {
       );
     });
 
-  // pagination 
+  // Sort a copy of filteredReviews — don't mutate the original
+  const sortedReviews = [...filteredReviews].sort((a, b) => {
+    if (sortBy === "highest") return b.rating - a.rating;
+    if (sortBy === "lowest") return a.rating - b.rating;
+    // "newest" — sort by createdAt descending; missing dates sort last
+    const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bTime - aTime;
+  });
+
+  // pagination
   const RESULTS_PER_PAGE = 6 // change this to whatever value. leaving at 5 for now
   const totalPages = Math.ceil(filteredReviews.length / RESULTS_PER_PAGE);
   const startIndex = (currentPage - 1) * RESULTS_PER_PAGE;
-  const paginatedResults = filteredReviews.slice(startIndex, startIndex + RESULTS_PER_PAGE);
+  const paginatedResults = sortedReviews.slice(startIndex, startIndex + RESULTS_PER_PAGE);
   // reused logic from prev project, most changes are under return
 
   return (
@@ -212,22 +224,39 @@ const ReviewsPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Search bar */}
-          <div className="w-full md:w-80">
-            <label className="mb-1 block text-xs font-semibold text-gray-600">
-              Search reviews or users
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search by product, text, or category..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+          {/* Search bar + sort */}
+          <div className="flex w-full flex-col gap-3 sm:flex-row md:w-auto">
+            <div className="w-full md:w-80">
+              <label className="mb-1 block text-xs font-semibold text-gray-600">
+                Search reviews or users
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search by product, text, or category..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full rounded-full border border-gray-300 text-black bg-white px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
+                />
+                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+                  🔍
+                </span>
+              </div>
+            </div>
+
+            <div className="w-full sm:w-48">
+              <label className="mb-1 block text-xs font-semibold text-gray-600">
+                Sort by
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as "newest" | "highest" | "lowest")}
                 className="w-full rounded-full border border-gray-300 text-black bg-white px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
-              />
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
-                🔍
-              </span>
+              >
+                <option value="newest">Newest first</option>
+                <option value="highest">Highest rated</option>
+                <option value="lowest">Lowest rated</option>
+              </select>
             </div>
           </div>
         </div>
