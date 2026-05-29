@@ -99,8 +99,8 @@ const ReviewsPage: React.FC = () => {
     ...Array.from(new Set(reviews.map((r) => r.category))),
   ];
 
-  // Normalize search term once
-  const term = searchTerm.toLowerCase().trim();
+  // Normalize search term — strip leading @ so searching "@john" matches "john"
+  const term = searchTerm.toLowerCase().trim().replace(/^@/, "");
 
   // Filter by category first, then by search term
   const filteredReviews = reviews
@@ -215,7 +215,7 @@ const ReviewsPage: React.FC = () => {
           {/* Search bar */}
           <div className="w-full md:w-80">
             <label className="mb-1 block text-xs font-semibold text-gray-600">
-              Search reviews
+              Search reviews or users
             </label>
             <div className="relative">
               <input
