@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
 import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
-import pink_pfp from "../assets/pink_pfp.png";
+//import pink_pfp from "../assets/pink_pfp.png";
 
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
