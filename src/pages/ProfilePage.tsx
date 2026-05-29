@@ -31,6 +31,22 @@ const ProfilePage: React.FC = () => {
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
 
+  const syncUsernameToReviews = useCallback(
+    async (username: string) => {
+      const token = await getToken();
+      const res = await fetch(`${environment}/api/reviews/sync-username`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username }),
+      });
+      if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
+    },
+    [getToken]
+  );
+
   const fetchMine = useCallback(async () => {
     try {
       setLoading(true);
@@ -51,6 +67,12 @@ const ProfilePage: React.FC = () => {
   useEffect(() => {
     fetchMine();
   }, [fetchMine]);
+
+  // Keep stored review usernames in sync when Clerk username differs (e.g. after a rename)
+  useEffect(() => {
+    if (!user?.username) return;
+    syncUsernameToReviews(user.username).catch(() => {});
+  }, [user?.username, syncUsernameToReviews]);
 
   // Refetch when user tabs back so vote counts stay fresh
   useEffect(() => {
@@ -83,7 +105,9 @@ const ProfilePage: React.FC = () => {
     setNameSaving(true);
     setNameError(null);
     try {
-      await user.update({ username: nameInput.trim() });
+      const newUsername = nameInput.trim();
+      await user.update({ username: newUsername });
+      await syncUsernameToReviews(newUsername);
       setShowNameModal(false);
     } catch (err: any) {
       setNameError(err.errors?.[0]?.message ?? err.message ?? "Failed to update name.");

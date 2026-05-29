@@ -148,6 +148,25 @@ router.get('/', async (req, res) => {
   }
 });
 
+// PATCH /api/reviews/sync-username — update stored username on all reviews by this user
+router.patch('/sync-username', requireAuth, async (req, res) => {
+    try {
+        const { username } = req.body;
+        if (!username || typeof username !== 'string' || !username.trim()) {
+            return res.status(400).json({ message: 'Username is required' });
+        }
+
+        const result = await Review.updateMany(
+            { clerkUserId: req.user.clerkUserId },
+            { $set: { username: username.trim() } }
+        );
+
+        res.status(200).json({ updated: result.modifiedCount });
+    } catch (error) {
+        res.status(500).json({ message: 'Error syncing username', error: error.message });
+    }
+});
+
 // GET /api/reviews/mine — reviews authored by the signed-in Clerk user
 router.get('/mine', requireAuth, async (req, res) => {
     try {
