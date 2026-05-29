@@ -10,12 +10,16 @@ import close_logo from "../assets/close_logo.png";
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
-  id?: string | number;   // might come as id or _id
+  id?: string | number;
   _id?: string;
   product: string;
   category: string;
   rating: number;
   review: string;
+  username?: string;
+  thumbsupCount?: number;
+  thumbsdownCount?: number;
+  userVote?: "up" | "down" | null;
 };
 
 const ReviewsPage: React.FC = () => {
@@ -110,7 +114,8 @@ const ReviewsPage: React.FC = () => {
       return (
         review.product.toLowerCase().includes(term) ||
         review.review.toLowerCase().includes(term) ||
-        review.category.toLowerCase().includes(term)
+        review.category.toLowerCase().includes(term) ||
+        (review.username ?? "").toLowerCase().includes(term)
       );
     });
 
@@ -286,8 +291,11 @@ const ReviewsPage: React.FC = () => {
                         category={review.category}
                         rating={review.rating}
                         review={review.review}
-                        thumbsupCount={review.thumbsupCount ?? 0}   
+                        username={review.username}
+                        thumbsupCount={review.thumbsupCount ?? 0}
                         thumbsdownCount={review.thumbsdownCount ?? 0}
+                        userVote={review.userVote ?? null}
+                        onVote={() => {}}
                     />
                     ))}
                 </div>

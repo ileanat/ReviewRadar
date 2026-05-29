@@ -10,6 +10,7 @@ type ReviewCardProps = {
   category: string;
   rating: number;
   review: string;
+  username?: string;
   thumbsupCount: number; 
   thumbsdownCount: number;
   userVote: "up" | "down" | null;
@@ -22,6 +23,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   category,
   rating,
   review,
+  username,
   thumbsupCount, 
   thumbsdownCount,
   userVote: initialUserVote,
@@ -76,6 +78,15 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
       {/* Header: product + category */}
       <div className="mb-2 flex items-start justify-between gap-2">
         <div>
+          {username && (
+            <Link
+              to={`/user/${encodeURIComponent(username)}`}
+              className="text-sm font-semibold text-purple-400 hover:text-purple-600 hover:underline mb-0.5 block"
+              onClick={(e) => e.stopPropagation()}
+            >
+              @{username}
+            </Link>
+          )}
           <Link
             to={`/products/${product.toLowerCase().replace(/\s+/g, '')}`}
             state={{ displayName: product }}

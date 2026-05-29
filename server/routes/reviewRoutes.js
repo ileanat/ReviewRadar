@@ -131,7 +131,7 @@ router.post('/vote', requireAuth, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
 
-    const reviews = await Review.find().sort({ _id: -1 }).select(['-clerkUserId','-username']); // do not remove the .select otherwise this information will be exposed
+    const reviews = await Review.find().sort({ _id: -1 }).select('-clerkUserId'); // clerkUserId must stay hidden
 
     const filteredReviews = reviews.map(r => { // may need to add more fields if we require more model mapping info
       const review = r.toObject();
@@ -180,6 +180,19 @@ router.get('/category-suggestion', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching category suggestion', error });
+    }
+});
+
+// GET /api/reviews/user/:username — public reviews for a given username
+router.get('/user/:username', async (req, res) => {
+    try {
+        const { username } = req.params;
+        const reviews = await Review.find({ username })
+            .sort({ _id: -1 })
+            .select('-clerkUserId');
+        res.status(200).json(reviews);
+    } catch (err) {
+        res.status(500).json({ message: 'Server error', error: err.message });
     }
 });
 

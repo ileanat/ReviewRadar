@@ -9,6 +9,7 @@ import SignUpPage from './SignUpPage.tsx';
 import ReviewsPage from './pages/ReviewsPage.tsx';
 // import UserReviewsPage from './pages/UserReviewsPage.tsx';
 import ProfilePage from './pages/ProfilePage.tsx';
+import PublicProfilePage from './pages/PublicProfilePage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
 import blink_logo from './assets/blink_logo.gif';
@@ -51,6 +52,7 @@ createRoot(document.getElementById('root')!).render(
               </ProtectedRoute>
             }
           />
+          <Route path="/user/:username" element={<PublicProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/reviews/:id" element={<ProductPage />} />
