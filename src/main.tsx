@@ -12,7 +12,7 @@ import ProfilePage from './pages/ProfilePage.tsx';
 import PublicProfilePage from './pages/PublicProfilePage.tsx';
 import WriteReview from "./WriteReview.tsx";
 import logo from './assets/logo.png';
-import blink_logo from './assets/blink_logo.gif';
+// import blink_logo from './assets/blink_logo.gif';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import ProductPage from './pages/ProductPage.tsx';
 // import ClickSpark from './components/ClickSpark.tsx';
