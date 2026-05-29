@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
 import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
+import pink_pfp from "../assets/pink_pfp.png";
+
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
@@ -162,9 +164,10 @@ const ProfilePage: React.FC = () => {
         <div className="rounded-3xl bg-white border border-purple-100 shadow-md p-8 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           {user?.imageUrl ? (
             <img
-              src={user.imageUrl}
+              src={user?.imageUrl}   //profile picture
               alt="Profile avatar"
-              className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-200 shrink-0"
+              className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-200 shrink-0 scale-110
+                hover:scale-125 transition-transform duration-300"
             />
           ) : (
             <div className="w-24 h-24 rounded-full bg-purple-100 ring-4 ring-purple-200 flex items-center justify-center shrink-0">
