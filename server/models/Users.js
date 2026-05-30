@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     thumbsup: {type: Number, default: 0 },
     thumbsdown: {type : Number, default: 0 },
     reviewCount: {type : Number, default: 0},
+    avatarColor: { type: String, default: "blue" },
     likedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],  // prevent the users from spamming likes
     dislikedReviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }]
 }, { timestamps: true });
