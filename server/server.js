@@ -4,8 +4,10 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/reviewRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 //import cookieParser from 'cookie-parser';
 import { clerkMiddleware } from '@clerk/express';
+
 
 dotenv.config();
 const environment = process.env.SERVER_ENV
@@ -23,6 +25,7 @@ app.use(clerkMiddleware());
 app.use("/uploads", express.static("uploads"));
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/users', userRoutes);
 
 
 mongoose.connect(process.env.MONGO_URI)
