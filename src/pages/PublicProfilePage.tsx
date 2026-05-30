@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
+import bluePfp from "../assets/blue_pfp.png";
+import greenPfp from "../assets/green_pfp.png";
+import pinkPfp from "../assets/pink_pfp.png";
+import redPfp from "../assets/red_pfp.png";
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
@@ -16,9 +20,17 @@ type Review = {
   userVote?: "up" | "down" | null;
 };
 
+const pfpMap: Record<string, string> = {
+  blue: bluePfp,
+  green: greenPfp,
+  pink: pinkPfp,
+  red: redPfp
+};
+
 const PublicProfilePage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
+  const [profileData, setProfileData] = useState<{ imageUrl: string; avatarColor?: string } | null>(null);
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -28,20 +40,25 @@ const PublicProfilePage: React.FC = () => {
     if (!username) return;
     setLoading(true);
     setError(null);
+    fetch(`${environment}/api/users/by-username/${encodeURIComponent(username)}`)
+        .then((res) => res.json())
+        .then((data) => {
+        setProfileData(data);
+        })
+        .catch((err) => console.error("User fetch failed:", err));
     fetch(`${environment}/api/reviews/user/${encodeURIComponent(username)}`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-        return res.json();
-      })
-      .then((data) => setReviews(data))
-      .catch((err) => setError(err.message || "Failed to load reviews"))
-      .finally(() => setLoading(false));
-  }, [username]);
+        .then((res) => res.json())
+        .then((data) => {
+        setReviews(data);
+        })
+        .catch((err) => console.error("Reviews fetch failed:", err))
+        .finally(() => setLoading(false));
+
+    }, [username]);
 
   const totalUp = reviews.reduce((sum, r) => sum + (r.thumbsupCount ?? 0), 0);
   const totalDown = reviews.reduce((sum, r) => sum + (r.thumbsdownCount ?? 0), 0);
   const totalInteractions = totalUp + totalDown;
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header */}
@@ -64,11 +81,27 @@ const PublicProfilePage: React.FC = () => {
       <main className="mx-auto max-w-4xl px-4 py-10">
         {/* Profile card */}
         <div className="rounded-3xl bg-white border border-purple-100 shadow-md p-8 mb-8 flex items-center gap-6">
-          <div className="w-20 h-20 rounded-full bg-purple-100 ring-4 ring-purple-200 flex items-center justify-center shrink-0">
-            <span className="text-3xl font-bold text-purple-400">
-              {username?.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          <div className="w-20 h-20 rounded-full ring-4 ring-purple-200 shrink-0 overflow-hidden flex items-center justify-center bg-purple-100">
+            {!profileData ? (
+                <div className="w-full h-full bg-gray-200 animate-pulse" />
+            ) : (
+                (() => {
+                const url = profileData.imageUrl;
+                const isManualUpload = url && (
+                    url.includes("/uploaded/") || 
+                    url.includes("eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvdXBsb2FkZWQv")
+                );
+
+                if (isManualUpload) {
+                    return <img src={url} className="w-full h-full object-cover" />;
+                }
+                if (profileData.avatarColor && pfpMap[profileData.avatarColor]) {
+                    return <img src={pfpMap[profileData.avatarColor]} className="w-full h-full object-cover" />;
+                }
+                return <img src={pfpMap.blue} className="w-full h-full object-cover" />;
+                })()
+            )}
+            </div>
           <div>
             <h1 className="text-2xl font-extrabold text-gray-900">@{username}</h1>
             <p className="text-sm text-gray-400 mt-0.5">Public profile</p>

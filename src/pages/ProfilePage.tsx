@@ -3,8 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useUser, useClerk, useAuth } from "@clerk/clerk-react";
 import ReviewCard from "../components/ReviewCard";
 import logo from "../assets/logo.png";
-// import pink_pfp from "../assets/pink_pfp.png";
-
+import bluePfp from "../assets/blue_pfp.png";
+import greenPfp from "../assets/green_pfp.png";
+import pinkPfp from "../assets/pink_pfp.png";
+import redPfp from "../assets/red_pfp.png";
 const environment = import.meta.env.VITE_CLIENT_ENV;
 
 type Review = {
@@ -18,10 +20,17 @@ type Review = {
   thumbsdownCount?: number;
 };
 
+const pfpMap: Record<string, string> = {
+  blue: bluePfp,
+  green: greenPfp,
+  pink: pinkPfp,
+  red: redPfp
+};
+
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const { signOut } = useClerk();
+  const { signOut, openUserProfile } = useClerk();
   const { getToken } = useAuth();
 
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -32,6 +41,8 @@ const ProfilePage: React.FC = () => {
   const [nameInput, setNameInput] = useState("");
   const [nameSaving, setNameSaving] = useState(false);
   const [nameError, setNameError] = useState<string | null>(null);
+  const [avatarColor, setAvatarColor] = useState<string | null>(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const syncUsernameToReviews = useCallback(
     async (username: string) => {
@@ -49,6 +60,24 @@ const ProfilePage: React.FC = () => {
     [getToken]
   );
 
+  const handleColorChange = async (color: string) => {
+    try {
+        const token = await getToken();
+        await fetch(`${environment}/api/users/update-avatar-color`, {
+        method: 'PATCH',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ clerkUserId: user?.id, avatarColor: color })
+        });
+        setAvatarColor(color);
+
+    } catch (err) {
+        console.error("Failed to update:", err);
+    }
+    };
+
   const fetchMine = useCallback(async () => {
     try {
       setLoading(true);
@@ -58,13 +87,23 @@ const ProfilePage: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
-      setReviews(await res.json());
+      const data = await res.json();
+      if (data.reviews && Array.isArray(data.reviews)) {
+        setReviews(data.reviews);
+      }
+      else if (Array.isArray(data)) {
+        setReviews(data);
+      }
+      if (data.avatarColor) {
+        setAvatarColor(data.avatarColor);
+    }
     } catch (err: any) {
       setError(err.message || "Failed to load your reviews");
     } finally {
       setLoading(false);
     }
   }, [getToken]);
+
 
   useEffect(() => {
     fetchMine();
@@ -96,12 +135,6 @@ const ProfilePage: React.FC = () => {
       ? `${user.firstName} ${user.lastName}`
       : user?.firstName ?? null;
 
-  const openNameModal = () => {
-    setNameInput(user?.username ?? user?.firstName ?? "");
-    setNameError(null);
-    setShowNameModal(true);
-  };
-
   const saveDisplayName = async () => {
     if (!user || !nameInput.trim()) return;
     setNameSaving(true);
@@ -124,6 +157,8 @@ const ProfilePage: React.FC = () => {
         year: "numeric",
       })
     : null;
+
+  
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
@@ -162,20 +197,45 @@ const ProfilePage: React.FC = () => {
       <main className="mx-auto max-w-4xl px-4 py-10">
         {/* Profile card */}
         <div className="rounded-3xl bg-white border border-purple-100 shadow-md p-8 mb-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-          {user?.imageUrl ? (
-            <img
-              src={user?.imageUrl}   //profile picture
-              alt="Profile avatar"
-              className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-200 shrink-0 scale-110
-                hover:scale-125 transition-transform duration-300"
-            />
-          ) : (
-            <div className="w-24 h-24 rounded-full bg-purple-100 ring-4 ring-purple-200 flex items-center justify-center shrink-0">
-              <span className="text-4xl font-bold text-purple-400">
-                {displayName.charAt(0).toUpperCase()}
-              </span>
+            {loading ? (
+            <div className="w-24 h-24 rounded-full bg-gray-100 animate-pulse ring-4 ring-purple-200 shrink-0" />
+            ) : (
+            <div className="relative group">
+                {(!user?.imageUrl || user.imageUrl.includes("eyJ0eXBlIjoiZGVmYXVsdC")) ? (
+                <button 
+                    onClick={() => setShowColorPicker(!showColorPicker)}
+                    className="transition-transform hover:scale-105 active:scale-95 outline-none"
+                >
+                    <img
+                    src={avatarColor && pfpMap[avatarColor] ? pfpMap[avatarColor] : pfpMap.blue}
+                    className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-200 shrink-0"
+                    />
+                </button>
+                ) : (
+                <img
+                    src={user.imageUrl}
+                    className="w-24 h-24 rounded-full object-cover ring-4 ring-purple-200 shrink-0"
+                />
+                )}
+
+                {showColorPicker && !user?.imageUrl?.includes("upload") && (
+                <div className="absolute top-28 left-0 flex gap-2 bg-white p-2 rounded-xl shadow-lg border border-purple-100 z-10">
+                    {["blue", "green", "pink", "red"].map((color) => (
+                    <button
+                        key={color}
+                        onClick={() => handleColorChange(color)}
+                        className={`w-8 h-8 rounded-full border-2 ${avatarColor === color ? 'border-purple-500 ring-2 ring-purple-200' : 'border-transparent'}`}
+                        style={{
+                        backgroundColor: color === 'blue' ? '#3b82f6' :
+                                        color === 'green' ? '#22c55e' :
+                                        color === 'pink' ? '#ec4899' : '#ef4444'
+                        }}
+                    />
+                    ))}
+                </div>
+                )}
             </div>
-          )}
+            )}
 
           <div className="flex-1 text-center sm:text-left">
             <h1 className="text-2xl font-extrabold text-gray-900">
@@ -192,14 +252,16 @@ const ProfilePage: React.FC = () => {
             {joinedDate && (
               <p className="text-xs text-gray-400 mt-1">Member since {joinedDate}</p>
             )}
+            {user?.passwordEnabled && (
             <button
-              onClick={openNameModal}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white border border-purple-300 px-3 py-1 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition"
+                onClick={() => openUserProfile()}
+                className="mt-3 ml-2 inline-flex items-center gap-1.5 rounded-full bg-white border border-purple-300 px-3 py-1 text-xs font-semibold text-purple-600 hover:bg-purple-50 transition"
             >
-              ✏️ Change username
+                Update Account
             </button>
-          </div>
+            )}
         </div>
+    </div>
 
         {/* Change display name modal */}
         {showNameModal && (

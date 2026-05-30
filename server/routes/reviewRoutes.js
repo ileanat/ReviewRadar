@@ -171,7 +171,8 @@ router.patch('/sync-username', requireAuth, async (req, res) => {
 router.get('/mine', requireAuth, async (req, res) => {
     try {
         const reviews = await Review.find({ clerkUserId: req.user.clerkUserId }).sort({ _id: -1 });
-        res.status(200).json(reviews);
+        const userDoc = await User.findOne({ clerkUserId: req.user.clerkUserId });
+        res.status(200).json({ reviews, avatarColor: userDoc?.avatarColor || null });
     } catch (error) {
         res.status(500).json({ message: 'Error fetching user reviews', error });
     }
