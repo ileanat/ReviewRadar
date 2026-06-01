@@ -63,6 +63,7 @@ const ProductPage = () => {
   }, [key]);
 
   const getAiSummary = async (reviews: any[]) => {
+  console.log(reviews);
   setLoadingSummary(true);
   try {
     const response = await fetch(aiWorkerUrl() || import.meta.env.VITE_AI_WORKER_URL, {

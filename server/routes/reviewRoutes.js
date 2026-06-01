@@ -210,7 +210,16 @@ router.get('/user/:username', async (req, res) => {
         const reviews = await Review.find({ username })
             .sort({ _id: -1 })
             .select('-clerkUserId');
-        res.status(200).json(reviews);
+
+        const filteredReviews = reviews.map((r) => {
+            const review = r.toObject();
+            review.thumbsupCount = r.thumbsupCount ?? 0;
+            review.thumbsdownCount = r.thumbsdownCount ?? 0;
+            review.userVote = null;
+            return review;
+        });
+
+        res.status(200).json(filteredReviews);
     } catch (err) {
         res.status(500).json({ message: 'Server error', error: err.message });
     }
