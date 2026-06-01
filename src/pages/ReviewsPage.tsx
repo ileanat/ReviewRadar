@@ -7,7 +7,7 @@ import { useUser, useClerk } from "@clerk/clerk-react";
 import logo from "../assets/logo.png";             
 import open_logo from "../assets/open_logo.png";   
 import close_logo from "../assets/close_logo.png";
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "../lib/api";
 
 type Review = {
   id?: string | number;
@@ -44,7 +44,7 @@ const ReviewsPage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const res = await fetch(`${environment}/api/reviews`);
+        const res = await fetch(apiUrl("/api/reviews"));
         if (!res.ok) {
           throw new Error(`Request failed with status ${res.status}`);
         }
@@ -141,45 +141,44 @@ const ReviewsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Top bar: logo + title + auth / nav */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
+      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6 sm:py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-2">
         {/* Left: logo + name */}
         <div
-          className="flex items-center gap-3 cursor-pointer"
+          className="flex min-w-0 flex-1 items-center gap-1.5 cursor-pointer overflow-hidden sm:gap-3"
           onClick={() => navigate("/")}
         >
           <img
             src={currentLogo}
             alt="ReviewRadar logo"
-            className="w-16 h-auto transition-all duration-200"
+            className="h-auto w-9 shrink-0 transition-all duration-200 sm:w-14"
           />
-          <span className="text-2xl font-extrabold text-purple-500">
+          <span className="truncate text-sm font-extrabold text-purple-500 sm:text-2xl">
             ReviewRadar
           </span>
         </div>
 
         {/* Right: auth + quick nav */}
-        <div className="flex items-center gap-3">
-          {/* “Write a Review” button */}
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2">
           <button
             onClick={() =>
               user ? navigate("/write-review") : navigate("/login")
             }
-            className="hidden sm:inline-flex items-center rounded-full bg-violet-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-violet-600 transition"
+            className="inline-flex items-center rounded-full bg-violet-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow transition hover:bg-violet-600 sm:px-4 sm:py-2 sm:text-sm"
           >
-            ✍️ Write a Review
+            <span className="sm:hidden">✍️</span>
+            <span className="hidden sm:inline">✍️ Write a Review</span>
           </button>
-
-          {/* Auth area */}
           {!user ? (
             <>
               <button
-                className="px-4 py-2 text-sm font-semibold rounded-full bg-sky-500 text-white hover:bg-sky-600 transition"
+                className="rounded-full bg-sky-500 px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-sky-600 sm:px-4 sm:py-2 sm:text-sm"
                 onClick={() => navigate("/login")}
               >
                 Login
               </button>
               <button
-                className="px-4 py-2 text-sm font-semibold rounded-full border-2 border-purple-500 text-purple-500 bg-white hover:bg-purple-500 hover:text-white transition"
+                className="rounded-full border-2 border-purple-500 bg-white px-2.5 py-1.5 text-xs font-semibold text-purple-500 transition hover:bg-purple-500 hover:text-white sm:px-4 sm:py-2 sm:text-sm"
                 onClick={() => navigate("/signup")}
               >
                 Sign Up
@@ -191,19 +190,20 @@ const ReviewsPage: React.FC = () => {
                 Hello, {user.username ?? user.firstName ?? user.primaryEmailAddress?.emailAddress} 👋
               </span>
               <button
-                className="px-4 py-2 text-sm font-semibold rounded-full bg-purple-500 text-white hover:bg-purple-600 transition"
+                className="rounded-full bg-purple-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-purple-600 sm:px-4 sm:py-2 sm:text-sm"
                 onClick={() => navigate("/profile")}
               >
-                My Profile
+                Profile
               </button>
               <button
-                className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
+                className="rounded-full bg-red-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-red-600 sm:px-4 sm:py-2 sm:text-sm"
                 onClick={() => signOut()}
               >
                 Logout
               </button>
             </>
           )}
+        </div>
         </div>
       </header>
 

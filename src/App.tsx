@@ -13,7 +13,7 @@ import makereview1 from "./assets/makereview1.png";
 import ReviewCard from "./components/ReviewCard";
 
 
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "./lib/api";
 
 function App() {
   //const [count, setCount] = useState(0);
@@ -54,7 +54,7 @@ function App() {
     try {
       const token = await session?.getToken();
 
-      const response = await fetch(`${environment}/api/reviews`, {
+      const response = await fetch(apiUrl("/api/reviews"), {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -79,7 +79,7 @@ function App() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ product: product, category: formCategory, rating, review: reviewText })
   };
-  fetch(`${environment}/api/reviews`, requestOptions)
+  fetch(apiUrl("/api/reviews"), requestOptions)
     .then(response => response.json())
     .then(data => {
 

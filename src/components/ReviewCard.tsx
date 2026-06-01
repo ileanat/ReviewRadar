@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
 
 type ReviewCardProps = {
@@ -52,7 +52,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   try {
     const token = await getToken(); 
 
-    const response = await fetch(`${environment}/api/reviews/vote`, {
+    const response = await fetch(apiUrl("/api/reviews/vote"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
     <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 shadow-sm flex flex-col h-full">
       {/* Header: product + category */}
       <div className="mb-2 flex items-start justify-between gap-2">
-        <div>
+        <div className="min-w-0 flex-1">
           {username && (
             <Link
               to={`/user/${encodeURIComponent(username)}`}
@@ -98,8 +98,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
         </div>
 
         {/* Rating as stars + number */}
-        <div className="flex items-center gap-1">
-          <div className="flex">
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+          <div className="flex text-sm leading-none sm:text-base">
             {Array.from({ length: 5 }).map((_, index) => (
               <span
                 key={index}
@@ -109,7 +109,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
               </span>
             ))}
           </div>
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-xs font-medium text-gray-700 sm:text-sm">
             {clampedRating.toFixed(1).replace(".0", "")}/5
           </span>
         </div>
