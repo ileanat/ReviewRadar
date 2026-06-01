@@ -6,7 +6,7 @@ import bluePfp from "../assets/blue_pfp.png";
 import greenPfp from "../assets/green_pfp.png";
 import pinkPfp from "../assets/pink_pfp.png";
 import redPfp from "../assets/red_pfp.png";
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "../lib/api";
 
 type Review = {
   _id?: string;
@@ -40,13 +40,13 @@ const PublicProfilePage: React.FC = () => {
     if (!username) return;
     setLoading(true);
     setError(null);
-    fetch(`${environment}/api/users/by-username/${encodeURIComponent(username)}`)
+    fetch(apiUrl(`/api/users/by-username/${encodeURIComponent(username)}`))
         .then((res) => res.json())
         .then((data) => {
         setProfileData(data);
         })
         .catch((err) => console.error("User fetch failed:", err));
-    fetch(`${environment}/api/reviews/user/${encodeURIComponent(username)}`)
+    fetch(apiUrl(`/api/reviews/user/${encodeURIComponent(username)}`))
         .then((res) => res.json())
         .then((data) => {
         setReviews(data);

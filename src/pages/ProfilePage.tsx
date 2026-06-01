@@ -7,7 +7,7 @@ import bluePfp from "../assets/blue_pfp.png";
 import greenPfp from "../assets/green_pfp.png";
 import pinkPfp from "../assets/pink_pfp.png";
 import redPfp from "../assets/red_pfp.png";
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "../lib/api";
 
 type Review = {
   _id?: string;
@@ -31,7 +31,7 @@ const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
   const { signOut, openUserProfile } = useClerk();
-  const { getToken } = useAuth();
+  const { getToken, isLoaded } = useAuth();
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +47,7 @@ const ProfilePage: React.FC = () => {
   const syncUsernameToReviews = useCallback(
     async (username: string) => {
       const token = await getToken();
-      const res = await fetch(`${environment}/api/reviews/sync-username`, {
+      const res = await fetch(apiUrl("/api/reviews/sync-username"), {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -63,7 +63,7 @@ const ProfilePage: React.FC = () => {
   const handleColorChange = async (color: string) => {
     try {
         const token = await getToken();
-        await fetch(`${environment}/api/users/update-avatar-color`, {
+        await fetch(apiUrl("/api/users/update-avatar-color"), {
         method: 'PATCH',
         headers: { 
             'Content-Type': 'application/json',
@@ -79,11 +79,12 @@ const ProfilePage: React.FC = () => {
     };
 
   const fetchMine = useCallback(async () => {
+    if (!isLoaded) return;
     try {
       setLoading(true);
       setError(null);
       const token = await getToken();
-      const res = await fetch(`${environment}/api/reviews/mine`, {
+      const res = await fetch(apiUrl("/api/reviews/mine"), {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(`Request failed with status ${res.status}`);
@@ -98,11 +99,16 @@ const ProfilePage: React.FC = () => {
         setAvatarColor(data.avatarColor);
     }
     } catch (err: any) {
-      setError(err.message || "Failed to load your reviews");
+      const msg = err?.message ?? "Failed to load your reviews";
+      setError(
+        msg.toLowerCase().includes("load failed") || msg === "Failed to fetch"
+          ? "Could not reach the server. Make sure the backend is running."
+          : msg
+      );
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, [getToken, isLoaded]);
 
 
   useEffect(() => {
@@ -163,34 +169,39 @@ const ProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white sticky top-0 z-40">
-        <div
-          className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
-          <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
-        </div>
+      <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 px-4 py-3 shadow-sm backdrop-blur sm:px-6 sm:py-4">
+        <div className="mx-auto flex max-w-4xl items-center justify-between gap-2">
+          <div
+            className="flex min-w-0 flex-1 cursor-pointer items-center gap-1.5 overflow-hidden sm:gap-3"
+            onClick={() => navigate("/")}
+          >
+            <img src={logo} alt="ReviewRadar logo" className="h-auto w-9 shrink-0 sm:w-12" />
+            <span className="truncate text-sm font-extrabold text-purple-500 sm:text-xl">
+              ReviewRadar
+            </span>
+          </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 rounded-full bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200 transition"
-          >
-            ← Back
-          </button>
-          <button
-            onClick={() => navigate("/write-review")}
-            className="hidden sm:inline-flex items-center rounded-full bg-violet-500 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-violet-600 transition"
-          >
-            ✍️ Write a Review
-          </button>
-          <button
-            className="px-4 py-2 text-sm font-semibold rounded-full bg-red-500 text-white hover:bg-red-600 transition"
-            onClick={() => signOut(() => navigate("/"))}
-          >
-            Logout
-          </button>
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
+            <button
+              onClick={() => navigate(-1)}
+              className="rounded-full bg-gray-100 px-2.5 py-1.5 text-xs font-semibold text-gray-600 transition hover:bg-gray-200 sm:px-4 sm:py-2 sm:text-sm"
+            >
+              ← Back
+            </button>
+            <button
+              onClick={() => navigate("/write-review")}
+              className="inline-flex items-center rounded-full bg-violet-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow transition hover:bg-violet-600 sm:px-4 sm:py-2 sm:text-sm"
+            >
+              <span className="sm:hidden">✍️</span>
+              <span className="hidden sm:inline">✍️ Write</span>
+            </button>
+            <button
+              className="rounded-full bg-red-500 px-2.5 py-1.5 text-xs font-semibold text-white transition hover:bg-red-600 sm:px-4 sm:py-2 sm:text-sm"
+              onClick={() => signOut(() => navigate("/"))}
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
@@ -301,22 +312,29 @@ const ProfilePage: React.FC = () => {
         )}
 
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="rounded-2xl bg-white border border-purple-100 shadow-sm p-5 text-center">
-            <p className="text-3xl font-extrabold text-purple-500">{reviews.length}</p>
-            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Reviews</p>
-          </div>
-          <div className="rounded-2xl bg-white border border-purple-100 shadow-sm p-5 text-center">
-            <p className="text-3xl font-extrabold text-violet-500">{totalInteractions}</p>
-            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Interactions Received</p>
-          </div>
-          <div className="rounded-2xl bg-white border border-purple-100 shadow-sm p-5 text-center">
-            <p className="text-2xl font-extrabold">
-              <span className="text-green-500">👍 {totalUp}</span>
-              <span className="text-gray-300 mx-1">/</span>
-              <span className="text-red-400">👎 {totalDown}</span>
+        <div className="mb-6 grid grid-cols-3 gap-2 sm:mb-8 sm:gap-4">
+          <div className="flex min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-purple-100 bg-white px-2 py-3 text-center shadow-sm sm:rounded-2xl sm:p-5">
+            <p className="text-xl font-extrabold leading-none text-purple-500 sm:text-3xl">{reviews.length}</p>
+            <p className="mt-1.5 text-[9px] font-medium uppercase leading-tight tracking-wide text-gray-500 sm:mt-1 sm:text-xs">
+              Reviews
             </p>
-            <p className="text-xs text-gray-500 mt-1 font-medium uppercase tracking-wide">Votes Received</p>
+          </div>
+          <div className="flex min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-purple-100 bg-white px-2 py-3 text-center shadow-sm sm:rounded-2xl sm:p-5">
+            <p className="text-xl font-extrabold leading-none text-violet-500 sm:text-3xl">{totalInteractions}</p>
+            <p className="mt-1.5 text-[9px] font-medium uppercase leading-tight tracking-wide text-gray-500 sm:mt-1 sm:text-xs">
+              <span className="sm:hidden">Received</span>
+              <span className="hidden sm:inline">Interactions Received</span>
+            </p>
+          </div>
+          <div className="flex min-w-0 flex-col items-center justify-center overflow-hidden rounded-xl border border-purple-100 bg-white px-2 py-3 text-center shadow-sm sm:rounded-2xl sm:p-5">
+            <div className="flex flex-col items-center gap-0.5 leading-none sm:flex-row sm:justify-center sm:gap-1">
+              <span className="text-base font-extrabold text-green-500 sm:text-2xl">👍 {totalUp}</span>
+              <span className="hidden text-gray-300 sm:inline">/</span>
+              <span className="text-base font-extrabold text-red-400 sm:text-2xl">👎 {totalDown}</span>
+            </div>
+            <p className="mt-1.5 text-[9px] font-medium uppercase leading-tight tracking-wide text-gray-500 sm:mt-1 sm:text-xs">
+              Votes
+            </p>
           </div>
         </div>
 

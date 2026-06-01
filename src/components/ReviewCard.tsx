@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from 'react-router-dom';
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
 
 type ReviewCardProps = {
@@ -52,7 +52,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({
   try {
     const token = await getToken(); 
 
-    const response = await fetch(`${environment}/api/reviews/vote`, {
+    const response = await fetch(apiUrl("/api/reviews/vote"), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

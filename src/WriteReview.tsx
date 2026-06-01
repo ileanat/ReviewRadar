@@ -6,7 +6,7 @@ import Fuse from "fuse.js";
 import logo from "./assets/logo.png";
 import dictionary from "./assets/shopping_dictionary.json";
 
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl } from "./lib/api";
 const fuse = new Fuse(dictionary, {
   threshold: 0.35,
   minMatchCharLength: 2,
@@ -45,7 +45,7 @@ export default function WriteReview() {
 
     const token = await getToken();
 
-    const res = await fetch(`${environment}/api/reviews`, {
+    const res = await fetch(apiUrl("/api/reviews"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,7 +105,7 @@ export default function WriteReview() {
 
       {/* Main content */}
       <main className="flex-1 flex items-center justify-center px-4 py-10 md:py-16">
-        <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-10 md:p-12">
+        <div className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-xl sm:p-8 md:p-12">
           <h1 className="text-3xl font-bold mb-2 text-purple-600 text-center">
             Write a Review
           </h1>
@@ -194,7 +194,7 @@ export default function WriteReview() {
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Rating
           </label>
-          <div className="flex space-x-3 mb-6">
+          <div className="mb-6 grid grid-cols-5 gap-1.5 sm:gap-2">
             {[1, 2, 3, 4, 5].map((star) => {
               const active = star <= rating;
               return (
@@ -202,15 +202,15 @@ export default function WriteReview() {
                   key={star}
                   type="button"
                   onClick={() => setRating(star)}
-                  className={`w-24 h-15 rounded-xl border shadow-sm flex items-center justify-center
-                              transition-transform ${
-                                active
-                                  ? "bg-yellow-50 border-yellow-300 scale-110"
-                                  : "bg-white border-gray-200 hover:scale-110"
-                              }`}
+                  aria-label={`Rate ${star} out of 5 stars`}
+                  className={`flex aspect-square min-w-0 items-center justify-center rounded-lg border shadow-sm transition-transform sm:rounded-xl ${
+                    active
+                      ? "scale-105 border-yellow-300 bg-yellow-50 sm:scale-110"
+                      : "border-gray-200 bg-white hover:scale-105 sm:hover:scale-110"
+                  }`}
                 >
                   <span
-                    className={`text-4xl ${
+                    className={`text-2xl leading-none sm:text-4xl ${
                       active ? "text-yellow-400" : "text-gray-300"
                     }`}
                   >

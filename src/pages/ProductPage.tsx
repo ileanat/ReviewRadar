@@ -1,7 +1,7 @@
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import logo from '../assets/logo.png';
-const environment = import.meta.env.VITE_CLIENT_ENV;
+import { apiUrl, aiWorkerUrl } from "../lib/api";
 
 interface ProductData {
   product: {
@@ -17,6 +17,30 @@ interface ProductData {
     category: string;
   }>;
 }
+
+const ProductPageHeader = ({ onBack }: { onBack: () => void }) => (
+  <header className="sticky top-0 z-40 border-b border-purple-100/60 bg-white/95 backdrop-blur-sm">
+    <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6 sm:py-4">
+      <div
+        className="flex min-w-0 flex-1 cursor-pointer items-center gap-1.5 overflow-hidden sm:gap-3"
+        onClick={onBack}
+      >
+        <img src={logo} alt="ReviewRadar logo" className="h-auto w-9 shrink-0 sm:w-14" />
+        <span className="truncate text-sm font-extrabold text-purple-500 sm:text-2xl">
+          ReviewRadar
+        </span>
+      </div>
+      <button
+        onClick={onBack}
+        className="shrink-0 rounded-full bg-purple-500 px-2.5 py-1.5 text-xs font-semibold text-white shadow transition hover:bg-purple-600 sm:px-4 sm:py-2 sm:text-sm"
+      >
+        <span className="sm:hidden">←</span>
+        <span className="hidden sm:inline">← Back to Home</span>
+      </button>
+    </div>
+  </header>
+);
+
 const ProductPage = () => {
   const { key } = useParams<{ key: string }>();
   const location = useLocation();
@@ -27,7 +51,7 @@ const ProductPage = () => {
   const [loadingSummary, setLoadingSummary] = useState(false);
 
   useEffect(() => {
-    fetch(`${environment}/api/products/${key}`)
+    fetch(apiUrl(`/api/products/${key}`))
       .then((res) => res.json())
       .then((json) => {
         setData(json);
@@ -41,7 +65,12 @@ const ProductPage = () => {
   const getAiSummary = async (reviews: any[]) => {
   setLoadingSummary(true);
   try {
-    const response = await fetch(import.meta.env.VITE_AI_WORKER_URL, {
+    const workerUrl = aiWorkerUrl();
+    if (!workerUrl) {
+      setSummary("Not enough review data to generate a summary.");
+      return;
+    }
+    const response = await fetch(workerUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reviews })
@@ -62,15 +91,7 @@ const ProductPage = () => {
 
   if (!data) return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-          <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
-          <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
-        </div>
-        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
-          ← Back to Home
-        </button>
-      </header>
+      <ProductPageHeader onBack={() => navigate("/")} />
       <main className="mx-auto max-w-6xl px-4 py-8">
         <p className="text-sm text-gray-500">Loading Reviews...</p>
       </main>
@@ -80,15 +101,7 @@ const ProductPage = () => {
   if (!data.product) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-        <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-            <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
-            <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
-          </div>
-          <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
-            ← Back to Home
-          </button>
-        </header>
+        <ProductPageHeader onBack={() => navigate("/")} />
         <main className="mx-auto max-w-6xl px-4 py-8">
           <p className="text-sm text-gray-500">No reviews found</p>
         </main>
@@ -98,23 +111,15 @@ const ProductPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-blue-50">
-      <header className="flex items-center justify-between px-6 py-4 shadow-sm bg-white backdrop-blur sticky top-0 z-40">
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-          <img src={logo} alt="ReviewRadar logo" className="w-16 h-auto" />
-          <span className="text-2xl font-extrabold text-purple-500">ReviewRadar</span>
-        </div>
-        <button onClick={() => navigate("/")} className="px-4 py-1.5 text-sm rounded-full bg-purple-500 text-white font-semibold shadow hover:bg-purple-600 transition">
-          ← Back to Home
-        </button>
-      </header>
+      <ProductPageHeader onBack={() => navigate("/")} />
 
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">{passedName || data.product?.name || key}</h1>
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:py-8">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{passedName || data.product?.name || key}</h1>
           <p className="text-sm text-gray-600 mt-2">Customer reviews and AI-powered insights</p>
         </div>
 
-      <div className="mb-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl shadow-sm">
+      <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm sm:mb-8 sm:p-6">
         <h2 className="text-indigo-600 font-bold text-xs uppercase tracking-widest mb-3 flex items-center gap-2">
           <span className="text-lg">✨</span> AI Review Summary
         </h2>
