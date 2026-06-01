@@ -65,12 +65,7 @@ const ProductPage = () => {
   const getAiSummary = async (reviews: any[]) => {
   setLoadingSummary(true);
   try {
-    const workerUrl = aiWorkerUrl();
-    if (!workerUrl) {
-      setSummary("Not enough review data to generate a summary.");
-      return;
-    }
-    const response = await fetch(workerUrl, {
+    const response = await fetch(aiWorkerUrl() || import.meta.env.VITE_AI_WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reviews })
