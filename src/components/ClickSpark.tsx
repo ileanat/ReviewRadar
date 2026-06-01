@@ -30,38 +30,23 @@ const ClickSpark = ({
   }>>([]);
   const startTimeRef = useRef<number | null>(null);
 
+  
+
+
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const canvas = canvasRef.current;
+  if (!canvas) return;
 
-    const parent = canvas.parentElement;
-    if (!parent) return;
+  const resizeCanvas = () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  };
 
-    let resizeTimeout: ReturnType<typeof setTimeout>;
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
 
-    const resizeCanvas = () => {
-      const { width, height } = parent.getBoundingClientRect();
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-      }
-    };
-
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(resizeCanvas, 100);
-    };
-
-    const ro = new ResizeObserver(handleResize);
-    ro.observe(parent);
-
-    resizeCanvas();
-
-    return () => {
-      ro.disconnect();
-      clearTimeout(resizeTimeout);
-    };
-  }, []);
+  return () => window.removeEventListener("resize", resizeCanvas);
+}, []);
 
   const easeFunc = useCallback(
     (t: number) => {
@@ -133,9 +118,8 @@ const ClickSpark = ({
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const x = e.clientX;
+    const y = e.clientY;
 
     const now = performance.now();
     const newSparks = Array.from({ length: sparkCount }, (_, i) => ({
@@ -148,31 +132,31 @@ const ClickSpark = ({
     sparksRef.current.push(...newSparks);
   };
 
-  return (
-    <div
+ return (
+  <div
+    style={{
+      position: 'relative',
+      width: '100%',
+      height: '100%'
+    }}
+    onClick={handleClick}
+  >
+    <canvas
+      ref={canvasRef}
       style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%'
+        position: 'fixed',        // ⬅️ changed from absolute
+        top: 0,
+        left: 0,
+        width: '100vw',           // ⬅️ full viewport width
+        height: '100vh',          // ⬅️ full viewport height
+        pointerEvents: 'none',
+        userSelect: 'none',
+        zIndex: 999999            // ⬅️ sits above navbar
       }}
-      onClick={handleClick}
-    >
-      <canvas
-        ref={canvasRef}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'block',
-          userSelect: 'none',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          pointerEvents: 'none'
-        }}
-      />
-      {children}
-    </div>
-  );
+    />
+    {children}
+  </div>
+);
 };
 
 export default ClickSpark;

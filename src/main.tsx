@@ -15,7 +15,7 @@ import logo from './assets/logo.png';
 // import blink_logo from './assets/blink_logo.gif';
 import { ProtectedRoute } from './components/ProtectedRoute.tsx';
 import ProductPage from './pages/ProductPage.tsx';
-// import ClickSpark from './components/ClickSpark.tsx';
+import ClickSpark from './components/ClickSpark.tsx';
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 if (!PUBLISHABLE_KEY) {
@@ -38,36 +38,42 @@ setFavicon(logo);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      {/*<ClickSpark sparkColor="#fdfdfdff" sparkSize={10} sparkRadius={10} sparkCount={8} duration={400}>*/}
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<ReviewsPage />} />
-          <Route path="/old-home" element={<App />} />
-          <Route path="/browse" element={<ReviewsPage />} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <ProfilePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/user/:username" element={<PublicProfilePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/reviews/:id" element={<ProductPage />} />
-          <Route path="/products/:key" element={<ProductPage />} />
-          <Route
-            path="/write-review"
-            element={
-              <ProtectedRoute>
-                <WriteReview />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-      {/*</ClickSpark>*/}
+      <ClickSpark
+      sparkColor="#2c004c"
+      sparkSize={10}
+      sparkRadius={15}
+      sparkCount={8}
+      duration={400}
+      >
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<ReviewsPage />} />
+            <Route path="/old-home" element={<App />} />
+            <Route path="/browse" element={<ReviewsPage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/user/:username" element={<PublicProfilePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/reviews/:id" element={<ProductPage />} />
+            <Route path="/products/:key" element={<ProductPage />} />
+            <Route
+              path="/write-review"
+              element={
+                <ProtectedRoute>
+                  <WriteReview />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </ClickSpark>
     </ClerkProvider>
   </StrictMode>
 );
